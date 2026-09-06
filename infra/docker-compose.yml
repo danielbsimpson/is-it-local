@@ -1,0 +1,45 @@
+# Local-first PoC stack: PostgreSQL/PostGIS, the FastAPI API, and SearXNG.
+# All services run on your machine; no paid APIs or cloud services are required.
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: is_it_local
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d is_it_local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../apps/api
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/is_it_local
+      LLM_BASE_URL: http://host.docker.internal:8080/v1
+      LLM_MODEL: local-model
+      SEARXNG_BASE_URL: http://searxng:8080
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  searxng:
+    image: searxng/searxng
+    environment:
+      SEARXNG_BASE_URL: http://localhost:8888/
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    ports:
+      - "8888:8080"
+
+volumes:
+  pgdata:

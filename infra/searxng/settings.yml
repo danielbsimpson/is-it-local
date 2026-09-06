@@ -1,0 +1,12 @@
+# SearXNG settings for the Is It Local enrichment pipeline.
+# Enables the JSON output format so the enrichment worker can parse results.
+use_default_settings: true
+
+search:
+  formats:
+    - html
+    - json
+
+server:
+  # Override for local PoC only. Generate a real value for any shared deployment.
+  secret_key: "change-me-local-poc"

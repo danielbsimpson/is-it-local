@@ -40,14 +40,14 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 
 ### Backend API (FastAPI)
 
-- [ ] Scaffold FastAPI app in `apps/api`.
-- [ ] Set up PostgreSQL + PostGIS via Docker Compose.
-- [ ] Add database migrations (Alembic).
-- [ ] Implement business CRUD/read endpoints.
-- [ ] Implement search endpoint (by name + location, geospatial "near me").
-- [ ] Implement business detail endpoint (classification, confidence, sources).
-- [ ] Auto-generate OpenAPI docs.
-- [ ] Add API tests.
+- [x] Scaffold FastAPI app in `apps/api`.
+- [x] Set up PostgreSQL + PostGIS via Docker Compose.
+- [x] Add database migrations (Alembic).
+- [x] Implement business CRUD/read endpoints.
+- [x] Implement search endpoint (by name + location, geospatial "near me").
+- [x] Implement business detail endpoint (classification, confidence, sources).
+- [x] Auto-generate OpenAPI docs.
+- [x] Add API tests.
 
 ### Data ingestion (seeding)
 
