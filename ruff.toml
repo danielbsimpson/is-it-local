@@ -1,9 +1,14 @@
 target-version = "py311"
 line-length = 100
 extend-exclude = [".venv", "dist", "__pycache__"]
+# Source roots so first-party import detection is stable regardless of CWD.
+src = ["apps/api", "packages/enrichment"]
 
 [lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[lint.isort]
+known-first-party = ["app", "enrichment"]
 
 [format]
 quote-style = "double"
