@@ -46,20 +46,21 @@ The current focus is a **local-first PoC**: everything runs on your own machine 
 
 Each business is assigned one of the following categories:
 
-| Classification | Meaning |
-| --- | --- |
-| **Family owned** | Owned and operated by a family or individual; ownership stays within a family. |
-| **Locally owned** | Owned by residents of the local community; profits largely stay local. |
-| **Independent** | Independently owned single-location or small business not tied to a national brand. |
-| **Franchise** | Locally owned but operating under a national/regional brand and franchise agreement. |
-| **Corporate owned** | Owned and operated directly by a large corporation or national chain. |
-| **Unknown** | Insufficient or conflicting information to classify with confidence. |
+| Classification      | Meaning                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------ |
+| **Family owned**    | Owned and operated by a family or individual; ownership stays within a family.       |
+| **Locally owned**   | Owned by residents of the local community; profits largely stay local.               |
+| **Independent**     | Independently owned single-location or small business not tied to a national brand.  |
+| **Franchise**       | Locally owned but operating under a national/regional brand and franchise agreement. |
+| **Corporate owned** | Owned and operated directly by a large corporation or national chain.                |
+| **Unknown**         | Insufficient or conflicting information to classify with confidence.                 |
 
 Every classification carries a **confidence score** and **source citations** so users can judge the answer for themselves.
 
 ## Features
 
 ### Now (local-first PoC target)
+
 - Search businesses by name and location.
 - View ownership classification with confidence score and cited sources.
 - Backend API that seeds and serves the business database from OpenStreetMap / Overture.
@@ -67,10 +68,12 @@ Every classification carries a **confidence score** and **source citations** so 
 - Web app for browsing and searching, served locally.
 
 ### Next
+
 - Community submissions and corrections with lightweight moderation.
 - Reputation/weighting system for community contributors.
 
 ### Later (post-PoC)
+
 - Mobile apps (iOS/Android) with map and nearby views.
 - **Photo lookup:** upload or capture a storefront image and match it to a business (local OCR + open-source image embeddings).
 - Local "impact" insights (e.g., how much of your spending stayed local).
@@ -113,15 +116,15 @@ flowchart LR
 
 A pragmatic, API-first stack chosen for strong geospatial support, a great data/ML ecosystem, and shared code across platforms.
 
-| Layer | Choice | Why |
-| --- | --- | --- |
-| **Backend API** | Python + [FastAPI](https://fastapi.tiangolo.com/) | Fast to build, async, great for LLM/data work; auto-generated OpenAPI docs. |
-| **Database** | PostgreSQL + [PostGIS](https://postgis.net/) | Robust relational store with first-class geospatial queries ("what's near me?"); runs locally in Docker. |
-| **Local LLM** | [llama.cpp](https://github.com/ggml-org/llama.cpp) | Runs an open-weight model on your machine via an OpenAI-compatible server — no API keys, no per-token cost. |
-| **Enrichment search** | [SearXNG](https://github.com/searxng/searxng) (self-hosted) | Free, private metasearch for ownership signals; no paid search API. |
-| **Web** | [Next.js](https://nextjs.org/) (React + TypeScript) | SEO-friendly, fast; served locally for the PoC. |
-| **Infra** | Docker + Docker Compose | Reproducible, fully local dev environment. |
-| **Mobile** _(deferred)_ | [React Native](https://reactnative.dev/) via [Expo](https://expo.dev/) | One codebase for iOS/Android; planned after the PoC validates the core loop. |
+| Layer                   | Choice                                                                 | Why                                                                                                         |
+| ----------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Backend API**         | Python + [FastAPI](https://fastapi.tiangolo.com/)                      | Fast to build, async, great for LLM/data work; auto-generated OpenAPI docs.                                 |
+| **Database**            | PostgreSQL + [PostGIS](https://postgis.net/)                           | Robust relational store with first-class geospatial queries ("what's near me?"); runs locally in Docker.    |
+| **Local LLM**           | [llama.cpp](https://github.com/ggml-org/llama.cpp)                     | Runs an open-weight model on your machine via an OpenAI-compatible server — no API keys, no per-token cost. |
+| **Enrichment search**   | [SearXNG](https://github.com/searxng/searxng) (self-hosted)            | Free, private metasearch for ownership signals; no paid search API.                                         |
+| **Web**                 | [Next.js](https://nextjs.org/) (React + TypeScript)                    | SEO-friendly, fast; served locally for the PoC.                                                             |
+| **Infra**               | Docker + Docker Compose                                                | Reproducible, fully local dev environment.                                                                  |
+| **Mobile** _(deferred)_ | [React Native](https://reactnative.dev/) via [Expo](https://expo.dev/) | One codebase for iOS/Android; planned after the PoC validates the core loop.                                |
 
 > The backend API is built first so the web client can be layered on top of a stable contract. Mobile follows once the local-first PoC proves the concept.
 
@@ -159,6 +162,7 @@ is-it-local/
 > The codebase is in its early stages. These are the intended setup steps; commands will be finalized as the apps are scaffolded.
 
 ### Prerequisites
+
 - [Docker](https://www.docker.com/) and Docker Compose (runs PostgreSQL/PostGIS and SearXNG locally)
 - [Python 3.11+](https://www.python.org/)
 - [Node.js 20+](https://nodejs.org/) and a package manager (pnpm recommended)
@@ -166,6 +170,7 @@ is-it-local/
 - No paid API keys are required for the PoC (see [Configuration](#configuration))
 
 ### Quick start (planned)
+
 ```bash
 # 1. Clone the repo
 git clone https://github.com/<your-org>/is-it-local.git
@@ -188,12 +193,12 @@ cd apps/web && pnpm install && pnpm dev
 
 Configuration is provided via environment variables. A `.env.example` will document all required values, including:
 
-| Variable | Description |
-| --- | --- |
-| `DATABASE_URL` | Local PostgreSQL/PostGIS connection string. |
-| `LLM_BASE_URL` | Base URL of the local llama.cpp OpenAI-compatible server (e.g. `http://localhost:8080/v1`). |
-| `LLM_MODEL` | Name/identifier of the open-weight model loaded in llama.cpp. |
-| `SEARXNG_BASE_URL` | Base URL of the self-hosted SearXNG instance (e.g. `http://localhost:8888`). |
+| Variable           | Description                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`     | Local PostgreSQL/PostGIS connection string.                                                 |
+| `LLM_BASE_URL`     | Base URL of the local llama.cpp OpenAI-compatible server (e.g. `http://localhost:8080/v1`). |
+| `LLM_MODEL`        | Name/identifier of the open-weight model loaded in llama.cpp.                               |
+| `SEARXNG_BASE_URL` | Base URL of the self-hosted SearXNG instance (e.g. `http://localhost:8888`).                |
 
 > Never commit real secrets. Keep `.env` out of version control.
 

@@ -4,7 +4,7 @@ version: 1.0
 date_created: 2026-09-06
 last_updated: 2026-09-06
 owner: Is It Local Core Team
-status: 'Planned'
+status: "Planned"
 tags: [feature, backend, data, infrastructure, api]
 ---
 
@@ -43,51 +43,51 @@ This implementation plan operationalizes **Phase 1 — Backend & Data (API-first
 
 - GOAL-001: Stand up the FastAPI application, PostgreSQL/PostGIS database, ORM models, migrations, and read/search/detail endpoints with tests.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-001 | Create `apps/api/pyproject.toml` declaring dependencies: `fastapi`, `uvicorn[standard]`, `sqlalchemy>=2`, `geoalchemy2`, `alembic`, `psycopg[binary]`, `pydantic>=2`, `pydantic-settings`, `httpx`, `pytest`, `pytest-asyncio`. | | |
-| TASK-002 | Create `apps/api/app/config.py` defining a `Settings` class (pydantic-settings) reading `DATABASE_URL`, `LLM_BASE_URL`, `LLM_MODEL`, `SEARXNG_BASE_URL`, `PROVIDER_RATE_LIMIT_PER_MIN`. | | |
-| TASK-003 | Create `apps/api/app/db.py` configuring the SQLAlchemy engine, `SessionLocal`, and a `get_db` FastAPI dependency. | | |
-| TASK-004 | Create ORM models in `apps/api/app/models/`: `business.py` (`Business`), `classification.py` (`OwnershipClassification`), `source.py` (`Source`), `community_submission.py` (`CommunitySubmission`), matching Phase 0 schemas; `Business.location` uses `geoalchemy2.Geography(POINT, 4326)`. | | |
-| TASK-005 | Create Pydantic schemas in `apps/api/app/schemas/` mirroring the ORM models for request/response serialization, including a `ClassificationEnum` with the six required values. | | |
-| TASK-006 | Initialize Alembic in `apps/api/alembic/`; create migration `0001_enable_postgis` executing `CREATE EXTENSION IF NOT EXISTS postgis`. | | |
-| TASK-007 | Create Alembic migration `0002_create_core_tables` creating tables `businesses`, `ownership_classifications`, `sources`, `community_submissions` with a GIST index on `businesses.location` and a unique constraint on `(provider, provider_place_id)` in `businesses`. | | |
-| TASK-008 | Create `apps/api/app/repositories/business_repository.py` with functions `get_by_id`, `search(name, lat, lon, radius_m)` using `ST_DWithin`, and `upsert_by_provider_identity`. | | |
-| TASK-009 | Create `apps/api/app/routers/businesses.py` exposing `GET /businesses/{id}` (detail with classification + sources) and `GET /businesses/search` (query params `name`, `lat`, `lon`, `radius_m`). | | |
-| TASK-010 | Create `apps/api/app/main.py` instantiating the FastAPI app, including the businesses router, enabling OpenAPI at `/docs` and `/openapi.json`, and a `GET /health` endpoint. | | |
-| TASK-011 | Create `infra/docker-compose.yml` defining services `db` (image `postgis/postgis:16-3.4`, healthcheck), `api` (builds `apps/api`, depends_on `db`), and `searxng` (image `searxng/searxng`, JSON output format enabled) with named volume `pgdata`. | | |
-| TASK-012 | Create `apps/api/Dockerfile` (python:3.11-slim base) installing dependencies and running `uvicorn app.main:app`. | | |
-| TASK-013 | Create tests in `apps/api/tests/`: `test_health.py`, `test_business_detail.py`, `test_business_search.py` using `pytest` + `httpx` against a test database. | | |
+| Task     | Description                                                                                                                                                                                                                                                                                   | Completed | Date |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-001 | Create `apps/api/pyproject.toml` declaring dependencies: `fastapi`, `uvicorn[standard]`, `sqlalchemy>=2`, `geoalchemy2`, `alembic`, `psycopg[binary]`, `pydantic>=2`, `pydantic-settings`, `httpx`, `pytest`, `pytest-asyncio`.                                                               |           |      |
+| TASK-002 | Create `apps/api/app/config.py` defining a `Settings` class (pydantic-settings) reading `DATABASE_URL`, `LLM_BASE_URL`, `LLM_MODEL`, `SEARXNG_BASE_URL`, `PROVIDER_RATE_LIMIT_PER_MIN`.                                                                                                       |           |      |
+| TASK-003 | Create `apps/api/app/db.py` configuring the SQLAlchemy engine, `SessionLocal`, and a `get_db` FastAPI dependency.                                                                                                                                                                             |           |      |
+| TASK-004 | Create ORM models in `apps/api/app/models/`: `business.py` (`Business`), `classification.py` (`OwnershipClassification`), `source.py` (`Source`), `community_submission.py` (`CommunitySubmission`), matching Phase 0 schemas; `Business.location` uses `geoalchemy2.Geography(POINT, 4326)`. |           |      |
+| TASK-005 | Create Pydantic schemas in `apps/api/app/schemas/` mirroring the ORM models for request/response serialization, including a `ClassificationEnum` with the six required values.                                                                                                                |           |      |
+| TASK-006 | Initialize Alembic in `apps/api/alembic/`; create migration `0001_enable_postgis` executing `CREATE EXTENSION IF NOT EXISTS postgis`.                                                                                                                                                         |           |      |
+| TASK-007 | Create Alembic migration `0002_create_core_tables` creating tables `businesses`, `ownership_classifications`, `sources`, `community_submissions` with a GIST index on `businesses.location` and a unique constraint on `(provider, provider_place_id)` in `businesses`.                       |           |      |
+| TASK-008 | Create `apps/api/app/repositories/business_repository.py` with functions `get_by_id`, `search(name, lat, lon, radius_m)` using `ST_DWithin`, and `upsert_by_provider_identity`.                                                                                                               |           |      |
+| TASK-009 | Create `apps/api/app/routers/businesses.py` exposing `GET /businesses/{id}` (detail with classification + sources) and `GET /businesses/search` (query params `name`, `lat`, `lon`, `radius_m`).                                                                                              |           |      |
+| TASK-010 | Create `apps/api/app/main.py` instantiating the FastAPI app, including the businesses router, enabling OpenAPI at `/docs` and `/openapi.json`, and a `GET /health` endpoint.                                                                                                                  |           |      |
+| TASK-011 | Create `infra/docker-compose.yml` defining services `db` (image `postgis/postgis:16-3.4`, healthcheck), `api` (builds `apps/api`, depends_on `db`), and `searxng` (image `searxng/searxng`, JSON output format enabled) with named volume `pgdata`.                                           |           |      |
+| TASK-012 | Create `apps/api/Dockerfile` (python:3.11-slim base) installing dependencies and running `uvicorn app.main:app`.                                                                                                                                                                              |           |      |
+| TASK-013 | Create tests in `apps/api/tests/`: `test_health.py`, `test_business_detail.py`, `test_business_search.py` using `pytest` + `httpx` against a test database.                                                                                                                                   |           |      |
 
 ### Implementation Phase 2
 
 - GOAL-002: Implement idempotent data ingestion from OpenStreetMap and Overture with de-duplication and a repeatable seed job.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-014 | Create `apps/api/app/providers/base.py` defining the `PlaceProvider` abstract interface with method `fetch_places(bbox: BoundingBox) -> list[NormalizedPlace]`. | | |
-| TASK-015 | Create `apps/api/app/providers/openstreetmap.py` implementing `PlaceProvider` against the OpenStreetMap Overpass API, mapping elements to `NormalizedPlace` (name, address, lat, lon, categories, provider_place_id). | | |
-| TASK-016 | Create `apps/api/app/providers/overture.py` implementing `PlaceProvider` reading OpenStreetMap/Overture place data and mapping to `NormalizedPlace`. | | |
-| TASK-017 | Create `apps/api/app/services/ingestion_service.py` orchestrating provider fetches and calling `business_repository.upsert_by_provider_identity` for idempotent writes. | | |
-| TASK-018 | Implement de-duplication in `apps/api/app/services/dedup_service.py` matching records across providers by normalized name + geospatial proximity (`ST_DWithin` within 50 meters) and merging into a canonical `Business`. | | |
-| TASK-019 | Create CLI seed script `apps/api/app/cli/seed.py` (invocable via `python -m app.cli.seed --provider <name> --bbox <coords>`) that runs ingestion and de-duplication. | | |
-| TASK-020 | Create `docs/data-sources-compliance.md` documenting OpenStreetMap (ODbL) and Overture license and terms-of-use compliance for ingestion and redistribution. | | |
-| TASK-021 | Create tests `apps/api/tests/test_ingestion_idempotent.py` (asserts re-running seed does not duplicate records) and `apps/api/tests/test_dedup.py`. | | |
+| Task     | Description                                                                                                                                                                                                               | Completed | Date |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-014 | Create `apps/api/app/providers/base.py` defining the `PlaceProvider` abstract interface with method `fetch_places(bbox: BoundingBox) -> list[NormalizedPlace]`.                                                           |           |      |
+| TASK-015 | Create `apps/api/app/providers/openstreetmap.py` implementing `PlaceProvider` against the OpenStreetMap Overpass API, mapping elements to `NormalizedPlace` (name, address, lat, lon, categories, provider_place_id).     |           |      |
+| TASK-016 | Create `apps/api/app/providers/overture.py` implementing `PlaceProvider` reading OpenStreetMap/Overture place data and mapping to `NormalizedPlace`.                                                                      |           |      |
+| TASK-017 | Create `apps/api/app/services/ingestion_service.py` orchestrating provider fetches and calling `business_repository.upsert_by_provider_identity` for idempotent writes.                                                   |           |      |
+| TASK-018 | Implement de-duplication in `apps/api/app/services/dedup_service.py` matching records across providers by normalized name + geospatial proximity (`ST_DWithin` within 50 meters) and merging into a canonical `Business`. |           |      |
+| TASK-019 | Create CLI seed script `apps/api/app/cli/seed.py` (invocable via `python -m app.cli.seed --provider <name> --bbox <coords>`) that runs ingestion and de-duplication.                                                      |           |      |
+| TASK-020 | Create `docs/data-sources-compliance.md` documenting OpenStreetMap (ODbL) and Overture license and terms-of-use compliance for ingestion and redistribution.                                                              |           |      |
+| TASK-021 | Create tests `apps/api/tests/test_ingestion_idempotent.py` (asserts re-running seed does not duplicate records) and `apps/api/tests/test_dedup.py`.                                                                       |           |      |
 
 ### Implementation Phase 3
 
 - GOAL-003: Implement the LLM + web-search enrichment pipeline that classifies ownership, produces confidence scores and cited sources, and persists results with cost/rate guardrails.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-022 | Create `packages/enrichment/pyproject.toml` declaring dependencies: `httpx`, `pydantic>=2`, `tenacity`, `openai` (used against the local llama.cpp OpenAI-compatible endpoint), and a shared DB access layer or client to the API. | | |
-| TASK-023 | Create `packages/enrichment/enrichment/search_client.py` implementing ownership-signal retrieval via the self-hosted SearXNG JSON API (`SEARXNG_BASE_URL`), returning candidate `Source` objects (url, snippet, retrieved_at). | | |
-| TASK-024 | Create `packages/enrichment/enrichment/llm_classifier.py` implementing a function `classify(business, sources) -> ClassificationResult` that calls the local llama.cpp server (`LLM_BASE_URL`, `LLM_MODEL`) and returns `{classification, confidence, cited_source_ids}` constrained to the six enum values. | | |
-| TASK-025 | Create `packages/enrichment/enrichment/guardrails.py` implementing a token-bucket rate limiter (`PROVIDER_RATE_LIMIT_PER_MIN`) for the local services, retries via `tenacity`, and an on-disk/DB response cache. | | |
-| TASK-026 | Create `packages/enrichment/enrichment/pipeline.py` orchestrating: fetch business → search sources → classify → persist `Source` rows and one `OwnershipClassification` row (with confidence + linked sources). | | |
-| TASK-027 | Create CLI `packages/enrichment/enrichment/cli.py` (`python -m enrichment.cli --limit N`) enriching businesses lacking a classification. | | |
-| TASK-028 | Create an evaluation harness `packages/enrichment/eval/` with a labeled fixture set `eval/fixtures.jsonl` and `eval/run_eval.py` computing accuracy/precision/recall against known classifications. | | |
-| TASK-029 | Create tests `packages/enrichment/tests/test_classifier.py`, `test_guardrails.py`, and `test_pipeline.py` using mocked LLM/search clients. | | |
+| Task     | Description                                                                                                                                                                                                                                                                                                  | Completed | Date |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---- |
+| TASK-022 | Create `packages/enrichment/pyproject.toml` declaring dependencies: `httpx`, `pydantic>=2`, `tenacity`, `openai` (used against the local llama.cpp OpenAI-compatible endpoint), and a shared DB access layer or client to the API.                                                                           |           |      |
+| TASK-023 | Create `packages/enrichment/enrichment/search_client.py` implementing ownership-signal retrieval via the self-hosted SearXNG JSON API (`SEARXNG_BASE_URL`), returning candidate `Source` objects (url, snippet, retrieved_at).                                                                               |           |      |
+| TASK-024 | Create `packages/enrichment/enrichment/llm_classifier.py` implementing a function `classify(business, sources) -> ClassificationResult` that calls the local llama.cpp server (`LLM_BASE_URL`, `LLM_MODEL`) and returns `{classification, confidence, cited_source_ids}` constrained to the six enum values. |           |      |
+| TASK-025 | Create `packages/enrichment/enrichment/guardrails.py` implementing a token-bucket rate limiter (`PROVIDER_RATE_LIMIT_PER_MIN`) for the local services, retries via `tenacity`, and an on-disk/DB response cache.                                                                                             |           |      |
+| TASK-026 | Create `packages/enrichment/enrichment/pipeline.py` orchestrating: fetch business → search sources → classify → persist `Source` rows and one `OwnershipClassification` row (with confidence + linked sources).                                                                                              |           |      |
+| TASK-027 | Create CLI `packages/enrichment/enrichment/cli.py` (`python -m enrichment.cli --limit N`) enriching businesses lacking a classification.                                                                                                                                                                     |           |      |
+| TASK-028 | Create an evaluation harness `packages/enrichment/eval/` with a labeled fixture set `eval/fixtures.jsonl` and `eval/run_eval.py` computing accuracy/precision/recall against known classifications.                                                                                                          |           |      |
+| TASK-029 | Create tests `packages/enrichment/tests/test_classifier.py`, `test_guardrails.py`, and `test_pipeline.py` using mocked LLM/search clients.                                                                                                                                                                   |           |      |
 
 ## 3. Alternatives
 

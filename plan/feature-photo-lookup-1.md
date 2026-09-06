@@ -4,7 +4,7 @@ version: 1.0
 date_created: 2026-09-06
 last_updated: 2026-09-06
 owner: Is It Local Core Team
-status: 'Deferred (post-PoC)'
+status: "Deferred (post-PoC)"
 tags: [feature, computer-vision, ocr, mobile, web, backend]
 ---
 
@@ -44,45 +44,45 @@ This implementation plan operationalizes **Phase 5 — Photo Lookup** from [TODO
 
 - GOAL-001: Add vector storage, OCR/embedding provider abstractions, and business embedding backfill in the backend.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-001 | Create Alembic migration `0005_enable_pgvector_and_embeddings` executing `CREATE EXTENSION IF NOT EXISTS vector` and adding a `logo_embedding vector(512)` column plus an IVFFlat/HNSW index to a new `business_images` table. | | |
-| TASK-002 | Create ORM model `apps/api/app/models/business_image.py` (`BusinessImage`) with fields `id`, `business_id`, `image_url` (nullable), `logo_embedding`, `source` (enum: `provider`, `community`), `created_at`. | | |
-| TASK-003 | Add `PHOTO_MATCH_CONFIDENCE_THRESHOLD`, `PHOTO_MAX_UPLOAD_BYTES`, `PHOTO_LOOKUP_RATE_LIMIT_PER_MIN`, `OCR_ENGINE` (default `tesseract`), and `EMBEDDING_MODEL` (default an open-source CLIP model) to `apps/api/app/config.py` `Settings` — all run locally, no API keys. | | |
-| TASK-004 | Create `apps/api/app/vision/base.py` defining `OcrProvider.extract_text(image_bytes) -> list[TextSpan]` and `EmbeddingProvider.embed(image_bytes) -> list[float]` abstract interfaces. | | |
-| TASK-005 | Create `apps/api/app/vision/ocr_provider.py` (local Tesseract via `pytesseract`) and `apps/api/app/vision/embedding_provider.py` (open-source CLIP via `open_clip`/`torch`) implementing the interfaces — models run locally, no API keys. | | |
-| TASK-006 | Create `apps/api/app/vision/image_utils.py` implementing MIME/size validation and EXIF stripping (`strip_exif(image_bytes)`). | | |
-| TASK-007 | Create a backfill CLI `apps/api/app/cli/backfill_embeddings.py` (`python -m app.cli.backfill_embeddings`) that computes and stores `logo_embedding` for businesses with available images. | | |
-| TASK-008 | Create tests `apps/api/tests/test_image_utils.py` (validation + EXIF stripping) and `apps/api/tests/test_vision_providers.py` (mocked providers). | | |
+| Task     | Description                                                                                                                                                                                                                                                               | Completed | Date |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-001 | Create Alembic migration `0005_enable_pgvector_and_embeddings` executing `CREATE EXTENSION IF NOT EXISTS vector` and adding a `logo_embedding vector(512)` column plus an IVFFlat/HNSW index to a new `business_images` table.                                            |           |      |
+| TASK-002 | Create ORM model `apps/api/app/models/business_image.py` (`BusinessImage`) with fields `id`, `business_id`, `image_url` (nullable), `logo_embedding`, `source` (enum: `provider`, `community`), `created_at`.                                                             |           |      |
+| TASK-003 | Add `PHOTO_MATCH_CONFIDENCE_THRESHOLD`, `PHOTO_MAX_UPLOAD_BYTES`, `PHOTO_LOOKUP_RATE_LIMIT_PER_MIN`, `OCR_ENGINE` (default `tesseract`), and `EMBEDDING_MODEL` (default an open-source CLIP model) to `apps/api/app/config.py` `Settings` — all run locally, no API keys. |           |      |
+| TASK-004 | Create `apps/api/app/vision/base.py` defining `OcrProvider.extract_text(image_bytes) -> list[TextSpan]` and `EmbeddingProvider.embed(image_bytes) -> list[float]` abstract interfaces.                                                                                    |           |      |
+| TASK-005 | Create `apps/api/app/vision/ocr_provider.py` (local Tesseract via `pytesseract`) and `apps/api/app/vision/embedding_provider.py` (open-source CLIP via `open_clip`/`torch`) implementing the interfaces — models run locally, no API keys.                                |           |      |
+| TASK-006 | Create `apps/api/app/vision/image_utils.py` implementing MIME/size validation and EXIF stripping (`strip_exif(image_bytes)`).                                                                                                                                             |           |      |
+| TASK-007 | Create a backfill CLI `apps/api/app/cli/backfill_embeddings.py` (`python -m app.cli.backfill_embeddings`) that computes and stores `logo_embedding` for businesses with available images.                                                                                 |           |      |
+| TASK-008 | Create tests `apps/api/tests/test_image_utils.py` (validation + EXIF stripping) and `apps/api/tests/test_vision_providers.py` (mocked providers).                                                                                                                         |           |      |
 
 ### Implementation Phase 2
 
 - GOAL-002: Implement the photo-lookup matching pipeline, ranking, endpoint, and fallback contract.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-009 | Create `apps/api/app/repositories/image_repository.py` with `nearest_by_embedding(embedding, k)` using pgvector similarity and `search_by_text(tokens)` reusing the businesses name index. | | |
-| TASK-010 | Create `apps/api/app/services/photo_lookup_service.py` implementing `lookup(image_bytes) -> LookupResult`: validate → strip EXIF → OCR → embed → fetch candidates (text + vector) → `rank_candidates` → apply `PHOTO_MATCH_CONFIDENCE_THRESHOLD`. | | |
-| TASK-011 | Implement the pure ranking function `rank_candidates(ocr_text, embedding, candidates)` in `apps/api/app/services/ranking.py` combining normalized text similarity and vector similarity into a single `match_confidence`. | | |
-| TASK-012 | Create Pydantic schemas in `apps/api/app/schemas/lookup.py` (`PhotoLookupResponse` with `matched: bool`, `candidates: list[CandidateMatch]`, `ocr_text: str`). | | |
-| TASK-013 | Create `apps/api/app/routers/lookup.py` exposing `POST /lookup/photo` (multipart) running the service in a threadpool/worker, rate-limited per SEC-004, returning `PhotoLookupResponse`. | | |
-| TASK-014 | Ensure temporary files/buffers are deleted after processing and no image is written to a web-served static path (SEC-002). | | |
-| TASK-015 | Create tests `apps/api/tests/test_ranking.py` (deterministic ranking), `test_photo_lookup.py` (matched + unmatched paths, mocked providers), and `test_lookup_validation.py` (invalid MIME/size → 422). | | |
+| Task     | Description                                                                                                                                                                                                                                       | Completed | Date |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-009 | Create `apps/api/app/repositories/image_repository.py` with `nearest_by_embedding(embedding, k)` using pgvector similarity and `search_by_text(tokens)` reusing the businesses name index.                                                        |           |      |
+| TASK-010 | Create `apps/api/app/services/photo_lookup_service.py` implementing `lookup(image_bytes) -> LookupResult`: validate → strip EXIF → OCR → embed → fetch candidates (text + vector) → `rank_candidates` → apply `PHOTO_MATCH_CONFIDENCE_THRESHOLD`. |           |      |
+| TASK-011 | Implement the pure ranking function `rank_candidates(ocr_text, embedding, candidates)` in `apps/api/app/services/ranking.py` combining normalized text similarity and vector similarity into a single `match_confidence`.                         |           |      |
+| TASK-012 | Create Pydantic schemas in `apps/api/app/schemas/lookup.py` (`PhotoLookupResponse` with `matched: bool`, `candidates: list[CandidateMatch]`, `ocr_text: str`).                                                                                    |           |      |
+| TASK-013 | Create `apps/api/app/routers/lookup.py` exposing `POST /lookup/photo` (multipart) running the service in a threadpool/worker, rate-limited per SEC-004, returning `PhotoLookupResponse`.                                                          |           |      |
+| TASK-014 | Ensure temporary files/buffers are deleted after processing and no image is written to a web-served static path (SEC-002).                                                                                                                        |           |      |
+| TASK-015 | Create tests `apps/api/tests/test_ranking.py` (deterministic ranking), `test_photo_lookup.py` (matched + unmatched paths, mocked providers), and `test_lookup_validation.py` (invalid MIME/size → 422).                                           |           |      |
 
 ### Implementation Phase 3
 
 - GOAL-003: Implement client capture/upload flows, result handling with fallback, and an accuracy evaluation harness.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-016 | Extend `apps/mobile/src/lib/api-client.ts` and `apps/web/src/lib/api-client.ts` with `photoLookup(imageFile) -> PhotoLookupResponse` sending multipart form data. | | |
-| TASK-017 | Create mobile capture flow `apps/mobile/src/app/scan.tsx` using `expo-camera`/`expo-image-picker` to capture or select an image, call `photoLookup`, and navigate to the matched business detail on `matched = true`. | | |
-| TASK-018 | Create web upload flow `apps/web/src/app/scan/page.tsx` with a file input and (where supported) `getUserMedia` camera capture, calling `photoLookup`. | | |
-| TASK-019 | Implement fallback UI in both clients: when `matched = false`, pre-fill the existing search with `ocr_text` and device location and navigate to the search results (REQ-005). | | |
-| TASK-020 | Create shared result types for `PhotoLookupResponse` and `CandidateMatch` in `packages/shared/src/types.ts`. | | |
-| TASK-021 | Add client tests: `apps/web/tests/scan.test.tsx` and `apps/mobile/__tests__/scan.test.tsx` covering matched-navigation and unmatched-fallback (mocked API client). | | |
-| TASK-022 | Create an evaluation harness `packages/enrichment/eval/photo/` (or `apps/api/eval/photo/`) with a labeled fixture set `fixtures/` (image → expected business id) and `run_photo_eval.py` computing top-1 and top-5 accuracy. | | |
-| TASK-023 | Create `docs/photo-lookup.md` documenting the pipeline, thresholds, privacy handling (EXIF stripping/consent), and evaluation results. | | |
+| Task     | Description                                                                                                                                                                                                                  | Completed | Date |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-016 | Extend `apps/mobile/src/lib/api-client.ts` and `apps/web/src/lib/api-client.ts` with `photoLookup(imageFile) -> PhotoLookupResponse` sending multipart form data.                                                            |           |      |
+| TASK-017 | Create mobile capture flow `apps/mobile/src/app/scan.tsx` using `expo-camera`/`expo-image-picker` to capture or select an image, call `photoLookup`, and navigate to the matched business detail on `matched = true`.        |           |      |
+| TASK-018 | Create web upload flow `apps/web/src/app/scan/page.tsx` with a file input and (where supported) `getUserMedia` camera capture, calling `photoLookup`.                                                                        |           |      |
+| TASK-019 | Implement fallback UI in both clients: when `matched = false`, pre-fill the existing search with `ocr_text` and device location and navigate to the search results (REQ-005).                                                |           |      |
+| TASK-020 | Create shared result types for `PhotoLookupResponse` and `CandidateMatch` in `packages/shared/src/types.ts`.                                                                                                                 |           |      |
+| TASK-021 | Add client tests: `apps/web/tests/scan.test.tsx` and `apps/mobile/__tests__/scan.test.tsx` covering matched-navigation and unmatched-fallback (mocked API client).                                                           |           |      |
+| TASK-022 | Create an evaluation harness `packages/enrichment/eval/photo/` (or `apps/api/eval/photo/`) with a labeled fixture set `fixtures/` (image → expected business id) and `run_photo_eval.py` computing top-1 and top-5 accuracy. |           |      |
+| TASK-023 | Create `docs/photo-lookup.md` documenting the pipeline, thresholds, privacy handling (EXIF stripping/consent), and evaluation results.                                                                                       |           |      |
 
 ## 3. Alternatives
 

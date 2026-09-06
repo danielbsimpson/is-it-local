@@ -70,12 +70,12 @@ These two overlap most often. Use this rule of thumb:
 
 Guidance when both could apply:
 
-| Situation | Prefer |
-| --- | --- |
-| Standalone brand, owner residency unknown | `independent` |
-| Standalone brand, owners confirmed local residents | `locally_owned` |
-| Owners local but operate under a national brand/franchise | `franchise` |
-| Standalone brand owned by an out-of-area investor group | `independent` |
+| Situation                                                 | Prefer          |
+| --------------------------------------------------------- | --------------- |
+| Standalone brand, owner residency unknown                 | `independent`   |
+| Standalone brand, owners confirmed local residents        | `locally_owned` |
+| Owners local but operate under a national brand/franchise | `franchise`     |
+| Standalone brand owned by an out-of-area investor group   | `independent`   |
 
 When evidence supports both and residency is confirmed, `locally_owned` is the
 more specific (and more useful) classification. When residency cannot be

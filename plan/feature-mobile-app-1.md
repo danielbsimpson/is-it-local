@@ -4,7 +4,7 @@ version: 1.0
 date_created: 2026-09-06
 last_updated: 2026-09-06
 owner: Is It Local Core Team
-status: 'Deferred (post-PoC)'
+status: "Deferred (post-PoC)"
 tags: [feature, mobile, react-native, expo]
 ---
 
@@ -44,44 +44,44 @@ This implementation plan operationalizes **Phase 3 — Mobile App (React Native 
 
 - GOAL-001: Scaffold the Expo app, navigation, typed API client, shared type integration, and classification primitives.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-001 | Scaffold an Expo (TypeScript, Expo Router) app in `apps/mobile`; create `apps/mobile/package.json` with scripts `start`, `android`, `ios`, `lint`, `typecheck`. | | |
-| TASK-002 | Add `apps/mobile/tsconfig.json` with a path alias `@is-it-local/shared` resolving to `packages/shared/src`, and register `apps/mobile` in the pnpm workspace. | | |
-| TASK-003 | Create `apps/mobile/app.json` (Expo config) defining `name`, `slug`, `scheme`, iOS bundle identifier, Android package, and the foreground location permission usage strings. | | |
-| TASK-004 | Create `apps/mobile/src/lib/config.ts` reading `EXPO_PUBLIC_API_BASE_URL` and `EXPO_PUBLIC_MAP_TILE_URL` from Expo public env vars. | | |
-| TASK-005 | Create `apps/mobile/src/lib/api-client.ts` exporting typed `searchBusinesses(params)` and `getBusiness(id)` using `fetch`, returning `@is-it-local/shared` types; URL-encode all params. | | |
-| TASK-006 | Create `apps/mobile/src/lib/classification.ts` exporting `CLASSIFICATION_COLORS` and `CLASSIFICATION_LABELS` for the six values (`family_owned`, `locally_owned`, `independent`, `franchise`, `corporate_owned`, `unknown`). | | |
-| TASK-007 | Create `apps/mobile/src/components/ClassificationBadge.tsx` and `apps/mobile/src/components/ConfidenceMeter.tsx` rendering the badge and confidence percentage. | | |
-| TASK-008 | Create `apps/mobile/src/app/_layout.tsx` defining the Expo Router tab/stack navigation for Search, Map, and Detail. | | |
-| TASK-009 | Create `apps/mobile/.env.example` documenting `EXPO_PUBLIC_API_BASE_URL` and `EXPO_PUBLIC_MAP_TILE_URL`. | | |
+| Task     | Description                                                                                                                                                                                                                  | Completed | Date |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-001 | Scaffold an Expo (TypeScript, Expo Router) app in `apps/mobile`; create `apps/mobile/package.json` with scripts `start`, `android`, `ios`, `lint`, `typecheck`.                                                              |           |      |
+| TASK-002 | Add `apps/mobile/tsconfig.json` with a path alias `@is-it-local/shared` resolving to `packages/shared/src`, and register `apps/mobile` in the pnpm workspace.                                                                |           |      |
+| TASK-003 | Create `apps/mobile/app.json` (Expo config) defining `name`, `slug`, `scheme`, iOS bundle identifier, Android package, and the foreground location permission usage strings.                                                 |           |      |
+| TASK-004 | Create `apps/mobile/src/lib/config.ts` reading `EXPO_PUBLIC_API_BASE_URL` and `EXPO_PUBLIC_MAP_TILE_URL` from Expo public env vars.                                                                                          |           |      |
+| TASK-005 | Create `apps/mobile/src/lib/api-client.ts` exporting typed `searchBusinesses(params)` and `getBusiness(id)` using `fetch`, returning `@is-it-local/shared` types; URL-encode all params.                                     |           |      |
+| TASK-006 | Create `apps/mobile/src/lib/classification.ts` exporting `CLASSIFICATION_COLORS` and `CLASSIFICATION_LABELS` for the six values (`family_owned`, `locally_owned`, `independent`, `franchise`, `corporate_owned`, `unknown`). |           |      |
+| TASK-007 | Create `apps/mobile/src/components/ClassificationBadge.tsx` and `apps/mobile/src/components/ConfidenceMeter.tsx` rendering the badge and confidence percentage.                                                              |           |      |
+| TASK-008 | Create `apps/mobile/src/app/_layout.tsx` defining the Expo Router tab/stack navigation for Search, Map, and Detail.                                                                                                          |           |      |
+| TASK-009 | Create `apps/mobile/.env.example` documenting `EXPO_PUBLIC_API_BASE_URL` and `EXPO_PUBLIC_MAP_TILE_URL`.                                                                                                                     |           |      |
 
 ### Implementation Phase 2
 
 - GOAL-002: Implement search, business detail, and the map "near me" experience using device location.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-010 | Create `apps/mobile/src/lib/location.ts` wrapping `expo-location` to request foreground permission and return `{lat, lon}`, with a graceful denied-permission fallback. | | |
-| TASK-011 | Create `apps/mobile/src/app/index.tsx` (Search screen) with a `name` input, a "near me" toggle, a radius selector, and a submit action calling `searchBusinesses`; handle loading, empty, and error states. | | |
-| TASK-012 | Create `apps/mobile/src/components/BusinessListItem.tsx` showing name, address, distance, and a `ClassificationBadge`; tapping navigates to the detail route. | | |
-| TASK-013 | Create `apps/mobile/src/app/business/[id].tsx` (Detail screen) calling `getBusiness(id)` and rendering name, address, `ClassificationBadge`, `ConfidenceMeter`, and a tappable cited-sources list opened via `expo-linking`. | | |
-| TASK-014 | Create `apps/mobile/src/app/map.tsx` (Map screen) using `react-native-maps` to render the device location and business markers colored by classification; tapping a marker opens the detail route. | | |
-| TASK-015 | Create `apps/mobile/src/components/ErrorState.tsx` and `apps/mobile/src/components/EmptyState.tsx` reused across screens. | | |
-| TASK-016 | Wire the map screen to fetch "near me" businesses via `location.ts` + `searchBusinesses` when foreground permission is granted. | | |
+| Task     | Description                                                                                                                                                                                                                  | Completed | Date |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-010 | Create `apps/mobile/src/lib/location.ts` wrapping `expo-location` to request foreground permission and return `{lat, lon}`, with a graceful denied-permission fallback.                                                      |           |      |
+| TASK-011 | Create `apps/mobile/src/app/index.tsx` (Search screen) with a `name` input, a "near me" toggle, a radius selector, and a submit action calling `searchBusinesses`; handle loading, empty, and error states.                  |           |      |
+| TASK-012 | Create `apps/mobile/src/components/BusinessListItem.tsx` showing name, address, distance, and a `ClassificationBadge`; tapping navigates to the detail route.                                                                |           |      |
+| TASK-013 | Create `apps/mobile/src/app/business/[id].tsx` (Detail screen) calling `getBusiness(id)` and rendering name, address, `ClassificationBadge`, `ConfidenceMeter`, and a tappable cited-sources list opened via `expo-linking`. |           |      |
+| TASK-014 | Create `apps/mobile/src/app/map.tsx` (Map screen) using `react-native-maps` to render the device location and business markers colored by classification; tapping a marker opens the detail route.                           |           |      |
+| TASK-015 | Create `apps/mobile/src/components/ErrorState.tsx` and `apps/mobile/src/components/EmptyState.tsx` reused across screens.                                                                                                    |           |      |
+| TASK-016 | Wire the map screen to fetch "near me" businesses via `location.ts` + `searchBusinesses` when foreground permission is granted.                                                                                              |           |      |
 
 ### Implementation Phase 3
 
 - GOAL-003: Add tests, configure iOS/Android EAS builds, and prepare store listings.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-017 | Add unit/component tests in `apps/mobile/__tests__/` using `jest-expo` + `@testing-library/react-native` for `ClassificationBadge`, `BusinessListItem`, and the search results rendering (mocked API client). | | |
-| TASK-018 | Create `apps/mobile/eas.json` defining `development`, `preview`, and `production` build profiles for iOS and Android. | | |
-| TASK-019 | Configure app icons and splash assets in `apps/mobile/assets/` and reference them in `app.json`. | | |
-| TASK-020 | Produce Android (`.apk`/`.aab`) and iOS build artifacts via `eas build --profile preview --platform all`; document the command and outputs in `apps/mobile/README.md`. | | |
-| TASK-021 | Create `apps/mobile/store/` containing screenshots, short/long descriptions, keywords, and a privacy declaration covering location usage. | | |
-| TASK-022 | Create `apps/mobile/README.md` documenting local dev (`expo start`), environment variables, running on simulators/devices, and EAS build/submit steps. | | |
+| Task     | Description                                                                                                                                                                                                   | Completed | Date |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-017 | Add unit/component tests in `apps/mobile/__tests__/` using `jest-expo` + `@testing-library/react-native` for `ClassificationBadge`, `BusinessListItem`, and the search results rendering (mocked API client). |           |      |
+| TASK-018 | Create `apps/mobile/eas.json` defining `development`, `preview`, and `production` build profiles for iOS and Android.                                                                                         |           |      |
+| TASK-019 | Configure app icons and splash assets in `apps/mobile/assets/` and reference them in `app.json`.                                                                                                              |           |      |
+| TASK-020 | Produce Android (`.apk`/`.aab`) and iOS build artifacts via `eas build --profile preview --platform all`; document the command and outputs in `apps/mobile/README.md`.                                        |           |      |
+| TASK-021 | Create `apps/mobile/store/` containing screenshots, short/long descriptions, keywords, and a privacy declaration covering location usage.                                                                     |           |      |
+| TASK-022 | Create `apps/mobile/README.md` documenting local dev (`expo start`), environment variables, running on simulators/devices, and EAS build/submit steps.                                                        |           |      |
 
 ## 3. Alternatives
 

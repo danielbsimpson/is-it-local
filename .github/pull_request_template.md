@@ -8,7 +8,7 @@ Closes #
 
 ## Changes
 
-- 
+-
 
 ## Checklist
 

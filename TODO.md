@@ -15,6 +15,7 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 > Implementation plan: [plan/infrastructure-foundations-1.md](plan/infrastructure-foundations-1.md)
 
 ### Repository & tooling
+
 - [x] Initialize monorepo structure (`apps/`, `packages/`, `infra/`, `docs/`).
 - [x] Add root tooling: package manager (pnpm), linting, formatting (Prettier/Ruff), pre-commit hooks.
 - [x] Add `LICENSE` (MIT).
@@ -23,6 +24,7 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 - [x] Add `CONTRIBUTING.md` and issue/PR templates.
 
 ### Data model & classification
+
 - [x] Define the core **Business** entity (id, name, address, geolocation, categories, contact, brand/parent).
 - [x] Define the **Ownership Classification** schema: `family_owned`, `locally_owned`, `independent`, `franchise`, `corporate_owned`, `unknown`.
 - [x] Add fields for **confidence score** and **source citations** on every classification.
@@ -37,6 +39,7 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 > Implementation plan: [plan/feature-backend-data-1.md](plan/feature-backend-data-1.md)
 
 ### Backend API (FastAPI)
+
 - [ ] Scaffold FastAPI app in `apps/api`.
 - [ ] Set up PostgreSQL + PostGIS via Docker Compose.
 - [ ] Add database migrations (Alembic).
@@ -47,6 +50,7 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 - [ ] Add API tests.
 
 ### Data ingestion (seeding)
+
 - [ ] Integrate **OpenStreetMap** (Overpass / extracts) to seed businesses — free and open, no API key.
 - [ ] Integrate **Overture Maps** to broaden coverage.
 - [ ] Build a de-duplication/merge strategy for overlapping records.
@@ -54,6 +58,7 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 - [ ] Document each provider's license/terms compliance.
 
 ### Enrichment pipeline (local LLM + self-hosted search)
+
 - [ ] Build enrichment worker in `packages/enrichment`.
 - [ ] Stand up a self-hosted **SearXNG** instance (Docker) for ownership-signal retrieval.
 - [ ] Implement search retrieval against the local SearXNG instance.
@@ -116,6 +121,7 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 ---
 
 ## Cross-Cutting (ongoing)
+
 - [ ] Security: secrets management, input validation, rate limiting, dependency scanning.
 - [ ] Privacy: clear data-use policy; respect provider terms; handle user data responsibly.
 - [ ] Observability: local logging and metrics across services.
@@ -126,6 +132,7 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 ---
 
 ## Open Questions / Decisions to Revisit
+
 - [ ] REST vs GraphQL for the public API.
 - [ ] Which open-weight model to standardize on for llama.cpp.
 - [ ] Data licensing constraints for redistributing enriched data.

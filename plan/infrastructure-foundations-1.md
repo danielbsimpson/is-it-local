@@ -4,7 +4,7 @@ version: 1.0
 date_created: 2026-09-06
 last_updated: 2026-09-06
 owner: Is It Local Core Team
-status: 'Completed'
+status: "Completed"
 tags: [infrastructure, architecture, foundations, chore, data]
 ---
 
@@ -37,35 +37,35 @@ This implementation plan operationalizes **Phase 0 — Foundations** from [TODO.
 
 - GOAL-001: Establish repository structure, root tooling, licensing, environment configuration, CI, and contribution guidelines.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-001 | Create top-level directories with `.gitkeep` placeholders: `apps/api/`, `apps/web/`, `apps/mobile/`, `packages/enrichment/`, `packages/shared/`, `infra/`, `docs/`. | ✅ | 2026-09-06 |
-| TASK-002 | Create root `pnpm-workspace.yaml` declaring `packages: ["apps/*", "packages/*"]`. | ✅ | 2026-09-06 |
-| TASK-003 | Create root `package.json` with fields `name: "is-it-local"`, `private: true`, `packageManager: "pnpm@9"`, and workspace scripts `lint`, `format`, `test`, `build`. | ✅ | 2026-09-06 |
-| TASK-004 | Create root `.gitignore` including `.env`, `node_modules/`, `__pycache__/`, `.venv/`, `dist/`, `.next/`, `*.log`. | ✅ | 2026-09-06 |
-| TASK-005 | Create `LICENSE` at repository root containing the MIT License text with copyright line `Copyright (c) 2026 Is It Local`. | ✅ | 2026-09-06 |
-| TASK-006 | Create `.env.example` documenting `DATABASE_URL`, `LLM_BASE_URL`, `LLM_MODEL`, `SEARXNG_BASE_URL` with commented placeholder values (local-first PoC; no paid API keys). | ✅ | 2026-09-06 |
-| TASK-007 | Create `.prettierrc.json` (root) and `prettier.config` ignore file `.prettierignore` for TypeScript/Markdown formatting. | ✅ | 2026-09-06 |
-| TASK-008 | Create root `ruff.toml` configuring `ruff` lint + format rules for Python packages (`apps/api`, `packages/enrichment`). | ✅ | 2026-09-06 |
-| TASK-009 | Create `.pre-commit-config.yaml` with hooks: `ruff`, `ruff-format`, `prettier`, and `end-of-file-fixer`. | ✅ | 2026-09-06 |
-| TASK-010 | Create `.github/workflows/ci.yml` running jobs: `lint`, `test`, `build` on `push` and `pull_request` to `main`, using `pnpm/action-setup` and `actions/setup-python`. | ✅ | 2026-09-06 |
-| TASK-011 | Create `CONTRIBUTING.md` at repository root describing branch strategy, commit conventions, and PR process. | ✅ | 2026-09-06 |
-| TASK-012 | Create `.github/ISSUE_TEMPLATE/bug_report.md`, `.github/ISSUE_TEMPLATE/feature_request.md`, and `.github/pull_request_template.md`. | ✅ | 2026-09-06 |
+| Task     | Description                                                                                                                                                              | Completed | Date       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------- |
+| TASK-001 | Create top-level directories with `.gitkeep` placeholders: `apps/api/`, `apps/web/`, `apps/mobile/`, `packages/enrichment/`, `packages/shared/`, `infra/`, `docs/`.      | ✅        | 2026-09-06 |
+| TASK-002 | Create root `pnpm-workspace.yaml` declaring `packages: ["apps/*", "packages/*"]`.                                                                                        | ✅        | 2026-09-06 |
+| TASK-003 | Create root `package.json` with fields `name: "is-it-local"`, `private: true`, `packageManager: "pnpm@9"`, and workspace scripts `lint`, `format`, `test`, `build`.      | ✅        | 2026-09-06 |
+| TASK-004 | Create root `.gitignore` including `.env`, `node_modules/`, `__pycache__/`, `.venv/`, `dist/`, `.next/`, `*.log`.                                                        | ✅        | 2026-09-06 |
+| TASK-005 | Create `LICENSE` at repository root containing the MIT License text with copyright line `Copyright (c) 2026 Is It Local`.                                                | ✅        | 2026-09-06 |
+| TASK-006 | Create `.env.example` documenting `DATABASE_URL`, `LLM_BASE_URL`, `LLM_MODEL`, `SEARXNG_BASE_URL` with commented placeholder values (local-first PoC; no paid API keys). | ✅        | 2026-09-06 |
+| TASK-007 | Create `.prettierrc.json` (root) and `prettier.config` ignore file `.prettierignore` for TypeScript/Markdown formatting.                                                 | ✅        | 2026-09-06 |
+| TASK-008 | Create root `ruff.toml` configuring `ruff` lint + format rules for Python packages (`apps/api`, `packages/enrichment`).                                                  | ✅        | 2026-09-06 |
+| TASK-009 | Create `.pre-commit-config.yaml` with hooks: `ruff`, `ruff-format`, `prettier`, and `end-of-file-fixer`.                                                                 | ✅        | 2026-09-06 |
+| TASK-010 | Create `.github/workflows/ci.yml` running jobs: `lint`, `test`, `build` on `push` and `pull_request` to `main`, using `pnpm/action-setup` and `actions/setup-python`.    | ✅        | 2026-09-06 |
+| TASK-011 | Create `CONTRIBUTING.md` at repository root describing branch strategy, commit conventions, and PR process.                                                              | ✅        | 2026-09-06 |
+| TASK-012 | Create `.github/ISSUE_TEMPLATE/bug_report.md`, `.github/ISSUE_TEMPLATE/feature_request.md`, and `.github/pull_request_template.md`.                                      | ✅        | 2026-09-06 |
 
 ### Implementation Phase 2
 
 - GOAL-002: Define the canonical data model and ownership classification schema, and document them.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-013 | Create `packages/shared/schema/business.schema.json` (JSON Schema draft 2020-12) defining the **Business** entity: `id` (uuid), `name` (string), `address` (object), `location` (GeoJSON Point), `categories` (string[]), `contact` (object), `brand` (string, nullable), `parent_company` (string, nullable). | ✅ | 2026-09-06 |
-| TASK-014 | Create `packages/shared/schema/classification.schema.json` defining the **Ownership Classification**: `business_id` (uuid), `classification` (enum: `family_owned`, `locally_owned`, `independent`, `franchise`, `corporate_owned`, `unknown`), `confidence` (number, 0.0–1.0), `sources` (array of Source references), `updated_at` (date-time). | ✅ | 2026-09-06 |
-| TASK-015 | Create `packages/shared/schema/source.schema.json` defining the **Source** entity: `id` (uuid), `provider` (string), `url` (uri), `retrieved_at` (date-time), `snippet` (string). | ✅ | 2026-09-06 |
-| TASK-016 | Create `packages/shared/schema/community-submission.schema.json` defining the **Community Submission** entity: `id` (uuid), `business_id` (uuid), `proposed_classification` (enum, same values as TASK-014), `evidence` (string), `submitter_id` (uuid), `status` (enum: `pending`, `approved`, `rejected`), `created_at` (date-time). | ✅ | 2026-09-06 |
-| TASK-017 | Create `packages/shared/src/types.ts` exporting TypeScript types/enums generated from the JSON Schemas (`OwnershipClassification`, `Business`, `Source`, `CommunitySubmission`). | ✅ | 2026-09-06 |
-| TASK-018 | Create `packages/shared/package.json` (`name: "@is-it-local/shared"`, `private: true`, `main`/`types` pointing to `src/types.ts`) and `packages/shared/tsconfig.json`. | ✅ | 2026-09-06 |
-| TASK-019 | Create `docs/data-model.md` documenting all four entities, field definitions, relationships, and the six classification values with confidence + sources semantics. | ✅ | 2026-09-06 |
-| TASK-020 | Create `docs/classification-schema.md` documenting the definition and boundaries of each ownership category, including the distinction between `locally_owned` and `independent`. | ✅ | 2026-09-06 |
+| Task     | Description                                                                                                                                                                                                                                                                                                                                       | Completed | Date       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- |
+| TASK-013 | Create `packages/shared/schema/business.schema.json` (JSON Schema draft 2020-12) defining the **Business** entity: `id` (uuid), `name` (string), `address` (object), `location` (GeoJSON Point), `categories` (string[]), `contact` (object), `brand` (string, nullable), `parent_company` (string, nullable).                                    | ✅        | 2026-09-06 |
+| TASK-014 | Create `packages/shared/schema/classification.schema.json` defining the **Ownership Classification**: `business_id` (uuid), `classification` (enum: `family_owned`, `locally_owned`, `independent`, `franchise`, `corporate_owned`, `unknown`), `confidence` (number, 0.0–1.0), `sources` (array of Source references), `updated_at` (date-time). | ✅        | 2026-09-06 |
+| TASK-015 | Create `packages/shared/schema/source.schema.json` defining the **Source** entity: `id` (uuid), `provider` (string), `url` (uri), `retrieved_at` (date-time), `snippet` (string).                                                                                                                                                                 | ✅        | 2026-09-06 |
+| TASK-016 | Create `packages/shared/schema/community-submission.schema.json` defining the **Community Submission** entity: `id` (uuid), `business_id` (uuid), `proposed_classification` (enum, same values as TASK-014), `evidence` (string), `submitter_id` (uuid), `status` (enum: `pending`, `approved`, `rejected`), `created_at` (date-time).            | ✅        | 2026-09-06 |
+| TASK-017 | Create `packages/shared/src/types.ts` exporting TypeScript types/enums generated from the JSON Schemas (`OwnershipClassification`, `Business`, `Source`, `CommunitySubmission`).                                                                                                                                                                  | ✅        | 2026-09-06 |
+| TASK-018 | Create `packages/shared/package.json` (`name: "@is-it-local/shared"`, `private: true`, `main`/`types` pointing to `src/types.ts`) and `packages/shared/tsconfig.json`.                                                                                                                                                                            | ✅        | 2026-09-06 |
+| TASK-019 | Create `docs/data-model.md` documenting all four entities, field definitions, relationships, and the six classification values with confidence + sources semantics.                                                                                                                                                                               | ✅        | 2026-09-06 |
+| TASK-020 | Create `docs/classification-schema.md` documenting the definition and boundaries of each ownership category, including the distinction between `locally_owned` and `independent`.                                                                                                                                                                 | ✅        | 2026-09-06 |
 
 ## 3. Alternatives
 

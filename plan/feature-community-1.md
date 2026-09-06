@@ -4,7 +4,7 @@ version: 1.0
 date_created: 2026-09-06
 last_updated: 2026-09-06
 owner: Is It Local Core Team
-status: 'Deferred (post-PoC)'
+status: "Deferred (post-PoC)"
 tags: [feature, community, moderation, auth, backend, frontend]
 ---
 
@@ -46,47 +46,47 @@ This implementation plan operationalizes **Phase 4 — Community & Network Effec
 
 - GOAL-001: Implement user accounts, lightweight authentication, roles, and reputation storage in the backend.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-001 | Create ORM model `apps/api/app/models/user.py` (`User`) with fields `id` (uuid), `email` (unique), `password_hash`, `role` (enum: `user`, `moderator`), `reputation` (integer, default 0), `created_at`. | | |
-| TASK-002 | Create Alembic migration `0003_create_users` creating the `users` table with a unique index on `email`. | | |
-| TASK-003 | Create `apps/api/app/services/auth_service.py` implementing `register(email, password)`, `authenticate(email, password)`, password hashing (`argon2`), and JWT issuance/verification using `JWT_SECRET`. | | |
-| TASK-004 | Add `JWT_SECRET`, `REPUTATION_APPROVE_DELTA`, `REPUTATION_REJECT_DELTA`, `REPORT_HIDE_THRESHOLD`, and `COMMUNITY_WRITE_RATE_LIMIT_PER_MIN` to `apps/api/app/config.py` `Settings`. | | |
-| TASK-005 | Create `apps/api/app/deps/auth.py` exposing FastAPI dependencies `require_user` and `require_moderator` that decode the bearer token and enforce role. | | |
-| TASK-006 | Create `apps/api/app/routers/auth.py` exposing `POST /auth/register` and `POST /auth/login` returning JWT access tokens. | | |
-| TASK-007 | Create Pydantic schemas in `apps/api/app/schemas/auth.py` (`RegisterRequest`, `LoginRequest`, `TokenResponse`, `UserPublic`). | | |
-| TASK-008 | Create tests `apps/api/tests/test_auth.py` covering registration, login, invalid credentials, and role-protected access. | | |
+| Task     | Description                                                                                                                                                                                              | Completed | Date |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-001 | Create ORM model `apps/api/app/models/user.py` (`User`) with fields `id` (uuid), `email` (unique), `password_hash`, `role` (enum: `user`, `moderator`), `reputation` (integer, default 0), `created_at`. |           |      |
+| TASK-002 | Create Alembic migration `0003_create_users` creating the `users` table with a unique index on `email`.                                                                                                  |           |      |
+| TASK-003 | Create `apps/api/app/services/auth_service.py` implementing `register(email, password)`, `authenticate(email, password)`, password hashing (`argon2`), and JWT issuance/verification using `JWT_SECRET`. |           |      |
+| TASK-004 | Add `JWT_SECRET`, `REPUTATION_APPROVE_DELTA`, `REPUTATION_REJECT_DELTA`, `REPORT_HIDE_THRESHOLD`, and `COMMUNITY_WRITE_RATE_LIMIT_PER_MIN` to `apps/api/app/config.py` `Settings`.                       |           |      |
+| TASK-005 | Create `apps/api/app/deps/auth.py` exposing FastAPI dependencies `require_user` and `require_moderator` that decode the bearer token and enforce role.                                                   |           |      |
+| TASK-006 | Create `apps/api/app/routers/auth.py` exposing `POST /auth/register` and `POST /auth/login` returning JWT access tokens.                                                                                 |           |      |
+| TASK-007 | Create Pydantic schemas in `apps/api/app/schemas/auth.py` (`RegisterRequest`, `LoginRequest`, `TokenResponse`, `UserPublic`).                                                                            |           |      |
+| TASK-008 | Create tests `apps/api/tests/test_auth.py` covering registration, login, invalid credentials, and role-protected access.                                                                                 |           |      |
 
 ### Implementation Phase 2
 
 - GOAL-002: Implement community submissions, moderation workflow, reputation-weighted resolution, and abuse reporting in the backend.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-009 | Extend `apps/api/app/models/community_submission.py` to include `status` (enum: `pending`, `approved`, `rejected`, `hidden`), `created_at`, and a foreign key to `users`. | | |
-| TASK-010 | Create ORM model `apps/api/app/models/report.py` (`SubmissionReport`) with fields `id`, `submission_id`, `reporter_id`, `reason` (enum: `incorrect`, `abusive`, `spam`), `created_at`. | | |
-| TASK-011 | Add a `classification_source` column (enum `auto`/`community`) to `ownership_classifications` via Alembic migration `0004_add_classification_source_and_reports` and create the `submission_reports` table. | | |
-| TASK-012 | Create `apps/api/app/repositories/submission_repository.py` with `create`, `get_by_id`, `list_for_business`, `set_status`, and `count_reports`. | | |
-| TASK-013 | Create `apps/api/app/services/submission_service.py` implementing `submit`, `moderate(status)` (updates business classification and sets `classification_source = community` on approval, applies reputation deltas), and reputation-weighted conflict resolution `resolve_effective_classification(business_id)`. | | |
-| TASK-014 | Create `apps/api/app/services/report_service.py` implementing `report(submission_id, reporter_id, reason)` and auto-hiding a submission when report count reaches `REPORT_HIDE_THRESHOLD`. | | |
-| TASK-015 | Create `apps/api/app/routers/submissions.py` exposing `POST /businesses/{id}/submissions` (require_user), `GET /businesses/{id}/submissions`, `POST /submissions/{id}/moderate` (require_moderator), and `POST /submissions/{id}/reports` (require_user), all rate-limited. | | |
-| TASK-016 | Update the business detail response schema/service to include `classification_source` and a `verified` boolean derived from it. | | |
-| TASK-017 | Create tests `apps/api/tests/test_submissions.py`, `test_moderation.py`, `test_reputation_resolution.py`, and `test_reports.py`. | | |
+| Task     | Description                                                                                                                                                                                                                                                                                                        | Completed | Date |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---- |
+| TASK-009 | Extend `apps/api/app/models/community_submission.py` to include `status` (enum: `pending`, `approved`, `rejected`, `hidden`), `created_at`, and a foreign key to `users`.                                                                                                                                          |           |      |
+| TASK-010 | Create ORM model `apps/api/app/models/report.py` (`SubmissionReport`) with fields `id`, `submission_id`, `reporter_id`, `reason` (enum: `incorrect`, `abusive`, `spam`), `created_at`.                                                                                                                             |           |      |
+| TASK-011 | Add a `classification_source` column (enum `auto`/`community`) to `ownership_classifications` via Alembic migration `0004_add_classification_source_and_reports` and create the `submission_reports` table.                                                                                                        |           |      |
+| TASK-012 | Create `apps/api/app/repositories/submission_repository.py` with `create`, `get_by_id`, `list_for_business`, `set_status`, and `count_reports`.                                                                                                                                                                    |           |      |
+| TASK-013 | Create `apps/api/app/services/submission_service.py` implementing `submit`, `moderate(status)` (updates business classification and sets `classification_source = community` on approval, applies reputation deltas), and reputation-weighted conflict resolution `resolve_effective_classification(business_id)`. |           |      |
+| TASK-014 | Create `apps/api/app/services/report_service.py` implementing `report(submission_id, reporter_id, reason)` and auto-hiding a submission when report count reaches `REPORT_HIDE_THRESHOLD`.                                                                                                                         |           |      |
+| TASK-015 | Create `apps/api/app/routers/submissions.py` exposing `POST /businesses/{id}/submissions` (require_user), `GET /businesses/{id}/submissions`, `POST /submissions/{id}/moderate` (require_moderator), and `POST /submissions/{id}/reports` (require_user), all rate-limited.                                        |           |      |
+| TASK-016 | Update the business detail response schema/service to include `classification_source` and a `verified` boolean derived from it.                                                                                                                                                                                    |           |      |
+| TASK-017 | Create tests `apps/api/tests/test_submissions.py`, `test_moderation.py`, `test_reputation_resolution.py`, and `test_reports.py`.                                                                                                                                                                                   |           |      |
 
 ### Implementation Phase 3
 
 - GOAL-003: Surface community features and verified-vs-auto states in the web and mobile clients.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-018 | Extend `apps/web/src/lib/api-client.ts` and `apps/mobile/src/lib/api-client.ts` with `register`, `login`, `submitClassification`, `listSubmissions`, `reportSubmission`, and token storage/attachment on requests. | | |
-| TASK-019 | Add a shared `ClassificationSource` enum and a `VerifiedBadge` concept to `packages/shared/src/types.ts`; define labels "Community verified" and "Auto-classified". | | |
-| TASK-020 | Create web components `apps/web/src/components/VerifiedBadge.tsx` and `apps/web/src/components/SubmissionForm.tsx`; render the verified/auto badge on the detail page and allow authenticated users to submit corrections. | | |
-| TASK-021 | Create mobile components `apps/mobile/src/components/VerifiedBadge.tsx` and `apps/mobile/src/components/SubmissionForm.tsx`; render the badge on the detail screen and allow authenticated submissions. | | |
-| TASK-022 | Add authentication screens/pages: `apps/web/src/app/(auth)/login/page.tsx` and `register/page.tsx`; `apps/mobile/src/app/login.tsx` and `register.tsx`; store the token securely (`expo-secure-store` on mobile). | | |
-| TASK-023 | Add a report action (report incorrect/abusive) to submission displays in both web and mobile detail views. | | |
-| TASK-024 | Create a minimal moderator review view `apps/web/src/app/moderate/page.tsx` listing pending/hidden submissions with approve/reject actions (visible only to `moderator` role). | | |
-| TASK-025 | Add tests: web `apps/web/tests/submission.test.tsx` and `verified-badge.test.tsx`; mobile `apps/mobile/__tests__/submission.test.tsx` (mocked API client). | | |
+| Task     | Description                                                                                                                                                                                                                | Completed | Date |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-018 | Extend `apps/web/src/lib/api-client.ts` and `apps/mobile/src/lib/api-client.ts` with `register`, `login`, `submitClassification`, `listSubmissions`, `reportSubmission`, and token storage/attachment on requests.         |           |      |
+| TASK-019 | Add a shared `ClassificationSource` enum and a `VerifiedBadge` concept to `packages/shared/src/types.ts`; define labels "Community verified" and "Auto-classified".                                                        |           |      |
+| TASK-020 | Create web components `apps/web/src/components/VerifiedBadge.tsx` and `apps/web/src/components/SubmissionForm.tsx`; render the verified/auto badge on the detail page and allow authenticated users to submit corrections. |           |      |
+| TASK-021 | Create mobile components `apps/mobile/src/components/VerifiedBadge.tsx` and `apps/mobile/src/components/SubmissionForm.tsx`; render the badge on the detail screen and allow authenticated submissions.                    |           |      |
+| TASK-022 | Add authentication screens/pages: `apps/web/src/app/(auth)/login/page.tsx` and `register/page.tsx`; `apps/mobile/src/app/login.tsx` and `register.tsx`; store the token securely (`expo-secure-store` on mobile).          |           |      |
+| TASK-023 | Add a report action (report incorrect/abusive) to submission displays in both web and mobile detail views.                                                                                                                 |           |      |
+| TASK-024 | Create a minimal moderator review view `apps/web/src/app/moderate/page.tsx` listing pending/hidden submissions with approve/reject actions (visible only to `moderator` role).                                             |           |      |
+| TASK-025 | Add tests: web `apps/web/tests/submission.test.tsx` and `verified-badge.test.tsx`; mobile `apps/mobile/__tests__/submission.test.tsx` (mocked API client).                                                                 |           |      |
 
 ## 3. Alternatives
 

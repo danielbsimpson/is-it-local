@@ -5,7 +5,14 @@
   "description": "A user-submitted proposed classification with evidence, pending review.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "business_id", "proposed_classification", "submitter_id", "status", "created_at"],
+  "required": [
+    "id",
+    "business_id",
+    "proposed_classification",
+    "submitter_id",
+    "status",
+    "created_at"
+  ],
   "properties": {
     "id": {
       "type": "string",

@@ -4,7 +4,7 @@ version: 1.0
 date_created: 2026-09-06
 last_updated: 2026-09-06
 owner: Is It Local Core Team
-status: 'Planned'
+status: "Planned"
 tags: [feature, frontend, web, nextjs]
 ---
 
@@ -42,46 +42,46 @@ This implementation plan operationalizes **Phase 2 — Web App (Next.js)** from 
 
 - GOAL-001: Scaffold the Next.js app, typed API client, shared design primitives, and the classification badge system.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-001 | Scaffold Next.js (App Router, TypeScript, ESLint) in `apps/web`; create `apps/web/package.json` with scripts `dev`, `build`, `start`, `lint`, `typecheck`. | | |
-| TASK-002 | Add `apps/web/tsconfig.json` with a path alias `@is-it-local/shared` resolving to `packages/shared/src`, and register `apps/web` in the pnpm workspace. | | |
-| TASK-003 | Create `apps/web/src/lib/config.ts` reading `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_MAP_TILE_URL` (OpenStreetMap tiles), and `NEXT_PUBLIC_GEOCODE_URL` (Nominatim) from environment variables. | | |
-| TASK-004 | Create `apps/web/src/lib/api-client.ts` exporting typed functions `searchBusinesses(params)` and `getBusiness(id)` using `fetch`, returning types from `@is-it-local/shared`; encode all query params. | | |
-| TASK-005 | Create `apps/web/src/lib/classification.ts` exporting a `CLASSIFICATION_COLORS` map and `CLASSIFICATION_LABELS` map for the six values (`family_owned`, `locally_owned`, `independent`, `franchise`, `corporate_owned`, `unknown`). | | |
-| TASK-006 | Create `apps/web/src/components/ClassificationBadge.tsx` rendering the label and color for a given classification value. | | |
-| TASK-007 | Create `apps/web/src/components/ConfidenceMeter.tsx` rendering a 0.0–1.0 confidence value as a percentage with an accessible label. | | |
-| TASK-008 | Create `apps/web/src/app/layout.tsx` and `apps/web/src/app/globals.css` establishing the responsive base layout, header, and theme tokens. | | |
-| TASK-009 | Create `apps/web/.env.example` documenting `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_MAP_TILE_URL`, `NEXT_PUBLIC_GEOCODE_URL`. | | |
+| Task     | Description                                                                                                                                                                                                                         | Completed | Date |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-001 | Scaffold Next.js (App Router, TypeScript, ESLint) in `apps/web`; create `apps/web/package.json` with scripts `dev`, `build`, `start`, `lint`, `typecheck`.                                                                          |           |      |
+| TASK-002 | Add `apps/web/tsconfig.json` with a path alias `@is-it-local/shared` resolving to `packages/shared/src`, and register `apps/web` in the pnpm workspace.                                                                             |           |      |
+| TASK-003 | Create `apps/web/src/lib/config.ts` reading `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_MAP_TILE_URL` (OpenStreetMap tiles), and `NEXT_PUBLIC_GEOCODE_URL` (Nominatim) from environment variables.                                     |           |      |
+| TASK-004 | Create `apps/web/src/lib/api-client.ts` exporting typed functions `searchBusinesses(params)` and `getBusiness(id)` using `fetch`, returning types from `@is-it-local/shared`; encode all query params.                              |           |      |
+| TASK-005 | Create `apps/web/src/lib/classification.ts` exporting a `CLASSIFICATION_COLORS` map and `CLASSIFICATION_LABELS` map for the six values (`family_owned`, `locally_owned`, `independent`, `franchise`, `corporate_owned`, `unknown`). |           |      |
+| TASK-006 | Create `apps/web/src/components/ClassificationBadge.tsx` rendering the label and color for a given classification value.                                                                                                            |           |      |
+| TASK-007 | Create `apps/web/src/components/ConfidenceMeter.tsx` rendering a 0.0–1.0 confidence value as a percentage with an accessible label.                                                                                                 |           |      |
+| TASK-008 | Create `apps/web/src/app/layout.tsx` and `apps/web/src/app/globals.css` establishing the responsive base layout, header, and theme tokens.                                                                                          |           |      |
+| TASK-009 | Create `apps/web/.env.example` documenting `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_MAP_TILE_URL`, `NEXT_PUBLIC_GEOCODE_URL`.                                                                                                       |           |      |
 
 ### Implementation Phase 2
 
 - GOAL-002: Implement the search experience, results list, and business detail page with a map.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-010 | Create `apps/web/src/components/SearchForm.tsx` with a `name` text input, a `location` input, a "use my location" button (browser Geolocation API), and a radius selector; on submit it navigates to `/search` with query params. | | |
-| TASK-011 | Create `apps/web/src/lib/geocode.ts` exporting `geocode(query) -> {lat, lon}` using a Nominatim (OpenStreetMap) endpoint at `NEXT_PUBLIC_GEOCODE_URL`, with graceful fallback when geolocation/geocoding fails. | | |
-| TASK-012 | Create `apps/web/src/app/page.tsx` (home) rendering the `SearchForm` and a short product explanation. | | |
-| TASK-013 | Create `apps/web/src/app/search/page.tsx` reading query params, calling `searchBusinesses`, and rendering a results list; handle loading, empty, and error states. | | |
-| TASK-014 | Create `apps/web/src/components/BusinessCard.tsx` showing name, address, distance, and a `ClassificationBadge`; link to the detail page `/business/[id]`. | | |
-| TASK-015 | Create `apps/web/src/app/business/[id]/page.tsx` calling `getBusiness(id)` and rendering name, address, `ClassificationBadge`, `ConfidenceMeter`, and a cited-sources list with external links (`rel="noopener noreferrer"`). | | |
-| TASK-016 | Create `apps/web/src/components/BusinessMap.tsx` rendering a map with a marker at the business location using an OSS map library (`react-leaflet`) and `NEXT_PUBLIC_MAP_TILE_URL`. | | |
-| TASK-017 | Create `apps/web/src/app/not-found.tsx` and `apps/web/src/app/error.tsx` for 404 and runtime error boundaries. | | |
+| Task     | Description                                                                                                                                                                                                                       | Completed | Date |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-010 | Create `apps/web/src/components/SearchForm.tsx` with a `name` text input, a `location` input, a "use my location" button (browser Geolocation API), and a radius selector; on submit it navigates to `/search` with query params. |           |      |
+| TASK-011 | Create `apps/web/src/lib/geocode.ts` exporting `geocode(query) -> {lat, lon}` using a Nominatim (OpenStreetMap) endpoint at `NEXT_PUBLIC_GEOCODE_URL`, with graceful fallback when geolocation/geocoding fails.                   |           |      |
+| TASK-012 | Create `apps/web/src/app/page.tsx` (home) rendering the `SearchForm` and a short product explanation.                                                                                                                             |           |      |
+| TASK-013 | Create `apps/web/src/app/search/page.tsx` reading query params, calling `searchBusinesses`, and rendering a results list; handle loading, empty, and error states.                                                                |           |      |
+| TASK-014 | Create `apps/web/src/components/BusinessCard.tsx` showing name, address, distance, and a `ClassificationBadge`; link to the detail page `/business/[id]`.                                                                         |           |      |
+| TASK-015 | Create `apps/web/src/app/business/[id]/page.tsx` calling `getBusiness(id)` and rendering name, address, `ClassificationBadge`, `ConfidenceMeter`, and a cited-sources list with external links (`rel="noopener noreferrer"`).     |           |      |
+| TASK-016 | Create `apps/web/src/components/BusinessMap.tsx` rendering a map with a marker at the business location using an OSS map library (`react-leaflet`) and `NEXT_PUBLIC_MAP_TILE_URL`.                                                |           |      |
+| TASK-017 | Create `apps/web/src/app/not-found.tsx` and `apps/web/src/app/error.tsx` for 404 and runtime error boundaries.                                                                                                                    |           |      |
 
 ### Implementation Phase 3
 
 - GOAL-003: Add responsiveness verification, lightweight local logging, tests, and a documented local run workflow.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-018 | Verify and adjust responsive layout for 360px, 768px, and 1280px breakpoints across home, search, and detail pages. | | |
-| TASK-019 | Create `apps/web/src/lib/logger.ts` exposing a `logEvent(name, props)` function that writes page-view and search events to the browser console (no third-party analytics). | | |
-| TASK-020 | Wire the error boundary (`app/error.tsx`) to the local `logger` and verify the app makes no requests to third-party analytics/monitoring endpoints — only the local API, map tiles, and geocoder. | | |
-| TASK-021 | Add component/integration tests in `apps/web/tests/` using `vitest` + `@testing-library/react` for `ClassificationBadge`, `SearchForm`, and the search results rendering (mocked API client). | | |
-| TASK-022 | Add an end-to-end smoke test with Playwright in `apps/web/e2e/` covering search → results → detail navigation against a mocked or seeded API. | | |
-| TASK-023 | Create `apps/web/README.md` documenting local dev, environment variables, build, and preview deployment steps. | | |
-| TASK-024 | Document the local run workflow (`pnpm --filter web dev`) and required env vars in `apps/web/README.md`; no hosted deployment is configured for the PoC. | | |
+| Task     | Description                                                                                                                                                                                       | Completed | Date |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-018 | Verify and adjust responsive layout for 360px, 768px, and 1280px breakpoints across home, search, and detail pages.                                                                               |           |      |
+| TASK-019 | Create `apps/web/src/lib/logger.ts` exposing a `logEvent(name, props)` function that writes page-view and search events to the browser console (no third-party analytics).                        |           |      |
+| TASK-020 | Wire the error boundary (`app/error.tsx`) to the local `logger` and verify the app makes no requests to third-party analytics/monitoring endpoints — only the local API, map tiles, and geocoder. |           |      |
+| TASK-021 | Add component/integration tests in `apps/web/tests/` using `vitest` + `@testing-library/react` for `ClassificationBadge`, `SearchForm`, and the search results rendering (mocked API client).     |           |      |
+| TASK-022 | Add an end-to-end smoke test with Playwright in `apps/web/e2e/` covering search → results → detail navigation against a mocked or seeded API.                                                     |           |      |
+| TASK-023 | Create `apps/web/README.md` documenting local dev, environment variables, build, and preview deployment steps.                                                                                    |           |      |
+| TASK-024 | Document the local run workflow (`pnpm --filter web dev`) and required env vars in `apps/web/README.md`; no hosted deployment is configured for the PoC.                                          |           |      |
 
 ## 3. Alternatives
 
