@@ -44,7 +44,7 @@ This implementation plan operationalizes **Phase 0 — Foundations** from [TODO.
 | TASK-003 | Create root `package.json` with fields `name: "is-it-local"`, `private: true`, `packageManager: "pnpm@9"`, and workspace scripts `lint`, `format`, `test`, `build`. | ✅ | 2026-09-06 |
 | TASK-004 | Create root `.gitignore` including `.env`, `node_modules/`, `__pycache__/`, `.venv/`, `dist/`, `.next/`, `*.log`. | ✅ | 2026-09-06 |
 | TASK-005 | Create `LICENSE` at repository root containing the MIT License text with copyright line `Copyright (c) 2026 Is It Local`. | ✅ | 2026-09-06 |
-| TASK-006 | Create `.env.example` documenting `DATABASE_URL`, `FOURSQUARE_API_KEY`, `LLM_API_KEY`, `SEARCH_API_KEY` with commented placeholder values. | ✅ | 2026-09-06 |
+| TASK-006 | Create `.env.example` documenting `DATABASE_URL`, `LLM_BASE_URL`, `LLM_MODEL`, `SEARXNG_BASE_URL` with commented placeholder values (local-first PoC; no paid API keys). | ✅ | 2026-09-06 |
 | TASK-007 | Create `.prettierrc.json` (root) and `prettier.config` ignore file `.prettierignore` for TypeScript/Markdown formatting. | ✅ | 2026-09-06 |
 | TASK-008 | Create root `ruff.toml` configuring `ruff` lint + format rules for Python packages (`apps/api`, `packages/enrichment`). | ✅ | 2026-09-06 |
 | TASK-009 | Create `.pre-commit-config.yaml` with hooks: `ruff`, `ruff-format`, `prettier`, and `end-of-file-fixer`. | ✅ | 2026-09-06 |

@@ -48,7 +48,7 @@ A piece of evidence retrieved from a provider that supports a classification.
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | uuid | yes | Stable unique identifier. |
-| `provider` | string | yes | Origin (e.g. `foursquare`, `web_search`, `corporate_registry`). |
+| `provider` | string | yes | Origin (e.g. `openstreetmap`, `searxng`, `corporate_registry`). |
 | `url` | uri | yes | URL where the evidence was found. |
 | `retrieved_at` | date-time | yes | When the source was retrieved. |
 | `snippet` | string | no | Relevant excerpt supporting the classification. |

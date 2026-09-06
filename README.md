@@ -31,10 +31,14 @@ The goal is to make the ownership structure of a business transparent and glance
 
 **Long-term north star:** point your phone at a storefront — or take a picture — and instantly learn whether shopping there supports your community.
 
+### Local-first proof of concept
+
+The current focus is a **local-first PoC**: everything runs on your own machine to prove out the idea while keeping costs at zero. That means a **local LLM via [llama.cpp](https://github.com/ggml-org/llama.cpp)**, a **self-hosted [SearXNG](https://github.com/searxng/searxng)** metasearch instance for ownership research, a **local PostgreSQL + PostGIS** database, **free and open data** from OpenStreetMap and Overture, and the **web app served locally**. No paid API keys and no third-party cloud services are required. Hosted deployment, mobile apps, and managed providers are deferred until the concept is validated.
+
 ## How It Works
 
-1. **Seed the database.** Ingest business/place data from providers like Foursquare and OpenStreetMap / Overture to build an initial catalog of businesses with locations and categories.
-2. **Enrich each business.** Use web search and LLM ingestion to research ownership signals (parent companies, franchise disclosures, "family owned since" language, local news, corporate registries, etc.) and produce a classification with a confidence score and cited sources.
+1. **Seed the database.** Ingest free and open business/place data from OpenStreetMap and Overture to build an initial catalog of businesses with locations and categories.
+2. **Enrich each business.** Use a self-hosted SearXNG metasearch instance and a local llama.cpp LLM to research ownership signals (parent companies, franchise disclosures, "family owned since" language, local news, corporate registries, etc.) and produce a classification with a confidence score and cited sources.
 3. **Serve answers.** Users search by name/location (and, in future states, by photo) to see a business's ownership classification, the reasoning, and the sources behind it.
 4. **Community refinement.** When automated data is uncertain, users can submit corrections and evidence. Community input is weighted and reviewed to improve accuracy over time.
 
@@ -55,20 +59,20 @@ Every classification carries a **confidence score** and **source citations** so 
 
 ## Features
 
-### Now (MVP target)
+### Now (local-first PoC target)
 - Search businesses by name and location.
 - View ownership classification with confidence score and cited sources.
-- Backend API that seeds and serves the business database.
-- LLM-assisted enrichment pipeline for ownership research.
+- Backend API that seeds and serves the business database from OpenStreetMap / Overture.
+- Local enrichment pipeline (self-hosted SearXNG + llama.cpp) for ownership research.
+- Web app for browsing and searching, served locally.
 
 ### Next
-- Web app for browsing and searching.
-- Mobile apps (iOS/Android) with map and nearby views.
 - Community submissions and corrections with lightweight moderation.
-
-### Future
-- **Photo lookup:** upload or capture a storefront image and match it to a business.
 - Reputation/weighting system for community contributors.
+
+### Later (post-PoC)
+- Mobile apps (iOS/Android) with map and nearby views.
+- **Photo lookup:** upload or capture a storefront image and match it to a business (local OCR + open-source image embeddings).
 - Local "impact" insights (e.g., how much of your spending stayed local).
 
 ## Architecture
@@ -92,16 +96,18 @@ flowchart LR
     API --> DB
     Enrich --> DB
 
-    subgraph External
-        FSQ[Foursquare Places]
-        OSM[OpenStreetMap / Overture]
-        LLM[LLM + Web Search]
+    subgraph Local Services
+        OSM[OpenStreetMap / Overture data]
+        SEARX[SearXNG self-hosted search]
+        LLM[llama.cpp local LLM]
     end
 
-    FSQ --> Enrich
     OSM --> Enrich
+    SEARX --> Enrich
     LLM --> Enrich
 ```
+
+> For the PoC, every box above runs locally — the database, API, web app, SearXNG, and llama.cpp all run on your machine via Docker Compose and local dev servers.
 
 ## Tech Stack
 
@@ -110,19 +116,20 @@ A pragmatic, API-first stack chosen for strong geospatial support, a great data/
 | Layer | Choice | Why |
 | --- | --- | --- |
 | **Backend API** | Python + [FastAPI](https://fastapi.tiangolo.com/) | Fast to build, async, great for LLM/data work; auto-generated OpenAPI docs. |
-| **Database** | PostgreSQL + [PostGIS](https://postgis.net/) | Robust relational store with first-class geospatial queries ("what's near me?"). |
-| **Enrichment** | Python workers + LLM APIs | Web search + LLM ingestion to research and classify ownership. |
-| **Web** | [Next.js](https://nextjs.org/) (React + TypeScript) | SEO-friendly, fast, shares UI patterns with mobile. |
-| **Mobile** | [React Native](https://reactnative.dev/) via [Expo](https://expo.dev/) | One codebase for iOS/Android; reuses TypeScript/React skills. |
-| **Infra** | Docker + Docker Compose | Reproducible local dev; portable deployments. |
+| **Database** | PostgreSQL + [PostGIS](https://postgis.net/) | Robust relational store with first-class geospatial queries ("what's near me?"); runs locally in Docker. |
+| **Local LLM** | [llama.cpp](https://github.com/ggml-org/llama.cpp) | Runs an open-weight model on your machine via an OpenAI-compatible server — no API keys, no per-token cost. |
+| **Enrichment search** | [SearXNG](https://github.com/searxng/searxng) (self-hosted) | Free, private metasearch for ownership signals; no paid search API. |
+| **Web** | [Next.js](https://nextjs.org/) (React + TypeScript) | SEO-friendly, fast; served locally for the PoC. |
+| **Infra** | Docker + Docker Compose | Reproducible, fully local dev environment. |
+| **Mobile** _(deferred)_ | [React Native](https://reactnative.dev/) via [Expo](https://expo.dev/) | One codebase for iOS/Android; planned after the PoC validates the core loop. |
 
-> The backend API is built first so the web and mobile clients can be layered on top of a stable contract.
+> The backend API is built first so the web client can be layered on top of a stable contract. Mobile follows once the local-first PoC proves the concept.
 
 ## Data Sources
 
-- **[Foursquare Places](https://location.foursquare.com/products/places/)** — seed catalog of businesses, categories, and locations.
-- **[OpenStreetMap](https://www.openstreetmap.org/) / [Overture Maps](https://overturemaps.org/)** — open place data to broaden coverage.
-- **LLM + web search enrichment** — automated ownership research with source citations.
+- **[OpenStreetMap](https://www.openstreetmap.org/)** — free and open seed catalog of businesses, categories, and locations.
+- **[Overture Maps](https://overturemaps.org/)** — open place data to broaden coverage.
+- **[SearXNG](https://github.com/searxng/searxng) + [llama.cpp](https://github.com/ggml-org/llama.cpp) enrichment** — self-hosted search and a local LLM produce ownership research with source citations, entirely on your machine.
 - **Community-submitted data** — user corrections and evidence that improve accuracy over time.
 
 > Always review each provider's license and terms of use before ingesting or redistributing data.
@@ -152,10 +159,11 @@ is-it-local/
 > The codebase is in its early stages. These are the intended setup steps; commands will be finalized as the apps are scaffolded.
 
 ### Prerequisites
-- [Docker](https://www.docker.com/) and Docker Compose
+- [Docker](https://www.docker.com/) and Docker Compose (runs PostgreSQL/PostGIS and SearXNG locally)
 - [Python 3.11+](https://www.python.org/)
 - [Node.js 20+](https://nodejs.org/) and a package manager (pnpm recommended)
-- API keys for your chosen data/LLM providers (see [Configuration](#configuration))
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) with an open-weight model, run as a local OpenAI-compatible server
+- No paid API keys are required for the PoC (see [Configuration](#configuration))
 
 ### Quick start (planned)
 ```bash
@@ -169,10 +177,10 @@ cp .env.example .env
 # 3. Start the database and API
 docker compose up -d
 
-# 4. Seed the database from a data provider
+# 4. Seed the database from OpenStreetMap / Overture
 #    (script to be added in apps/api)
 
-# 5. Run the web app
+# 5. Run the web app locally
 cd apps/web && pnpm install && pnpm dev
 ```
 
@@ -182,23 +190,23 @@ Configuration is provided via environment variables. A `.env.example` will docum
 
 | Variable | Description |
 | --- | --- |
-| `DATABASE_URL` | PostgreSQL/PostGIS connection string. |
-| `FOURSQUARE_API_KEY` | Foursquare Places API key for seeding data. |
-| `LLM_API_KEY` | API key for the LLM provider used in enrichment. |
-| `SEARCH_API_KEY` | Web-search API key used during enrichment. |
+| `DATABASE_URL` | Local PostgreSQL/PostGIS connection string. |
+| `LLM_BASE_URL` | Base URL of the local llama.cpp OpenAI-compatible server (e.g. `http://localhost:8080/v1`). |
+| `LLM_MODEL` | Name/identifier of the open-weight model loaded in llama.cpp. |
+| `SEARXNG_BASE_URL` | Base URL of the self-hosted SearXNG instance (e.g. `http://localhost:8888`). |
 
 > Never commit real secrets. Keep `.env` out of version control.
 
 ## Roadmap
 
-See [TODO.md](TODO.md) for the detailed, phase-by-phase task list, and the [plan/](plan/) directory for the full machine-readable implementation plan behind each phase. At a high level:
+See [TODO.md](TODO.md) for the detailed, phase-by-phase task list, and the [plan/](plan/) directory for the full machine-readable implementation plan behind each phase. The **local-first PoC covers Phases 0–2** (foundations, local backend & data, and the local web app); later phases are deferred until the concept is validated. At a high level:
 
 1. **Phase 0 — Foundations:** repo, tooling, data model, classification schema. — [plan/infrastructure-foundations-1.md](plan/infrastructure-foundations-1.md)
-2. **Phase 1 — Backend & data:** ingest seed data, build enrichment pipeline, expose API. — [plan/feature-backend-data-1.md](plan/feature-backend-data-1.md)
-3. **Phase 2 — Web app:** search and business detail views. — [plan/feature-web-app-1.md](plan/feature-web-app-1.md)
-4. **Phase 3 — Mobile app:** nearby/map views on iOS and Android. — [plan/feature-mobile-app-1.md](plan/feature-mobile-app-1.md)
+2. **Phase 1 — Backend & data:** ingest open seed data, build local enrichment pipeline, expose API. — [plan/feature-backend-data-1.md](plan/feature-backend-data-1.md)
+3. **Phase 2 — Web app:** search and business detail views, served locally. — [plan/feature-web-app-1.md](plan/feature-web-app-1.md)
+4. **Phase 3 — Mobile app** _(post-PoC)_**:** nearby/map views on iOS and Android. — [plan/feature-mobile-app-1.md](plan/feature-mobile-app-1.md)
 5. **Phase 4 — Community:** submissions, corrections, and moderation. — [plan/feature-community-1.md](plan/feature-community-1.md)
-6. **Phase 5 — Photo lookup:** image upload/capture and matching. — [plan/feature-photo-lookup-1.md](plan/feature-photo-lookup-1.md)
+6. **Phase 5 — Photo lookup** _(post-PoC)_**:** image upload/capture and matching. — [plan/feature-photo-lookup-1.md](plan/feature-photo-lookup-1.md)
 
 ## Contributing
 

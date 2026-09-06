@@ -4,13 +4,15 @@ version: 1.0
 date_created: 2026-09-06
 last_updated: 2026-09-06
 owner: Is It Local Core Team
-status: 'Planned'
+status: 'Deferred (post-PoC)'
 tags: [feature, computer-vision, ocr, mobile, web, backend]
 ---
 
 # Introduction
 
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+![Status: Deferred (post-PoC)](https://img.shields.io/badge/status-Deferred-lightgrey)
+
+> **Deferred until after the local-first PoC.** When built, photo lookup uses local tools only — **Tesseract OCR** and an **open-source CLIP** embedding model with **pgvector** — so the entire pipeline runs on your machine with no third-party vision APIs.
 
 This implementation plan operationalizes **Phase 5 — Photo Lookup** from [TODO.md](../TODO.md). It enables users to upload or capture a storefront/logo image and receive a matched business with its ownership classification. It adds a backend image-matching service combining OCR text extraction and visual embedding similarity search, mobile and web capture/upload flows, a graceful fallback to location + text search when a confident match is not found, and an accuracy evaluation harness. This plan extends the Phase 1 backend ([feature-backend-data-1.md](feature-backend-data-1.md)), the Phase 2 web app ([feature-web-app-1.md](feature-web-app-1.md)), and the Phase 3 mobile app ([feature-mobile-app-1.md](feature-mobile-app-1.md)), reusing the `Business` schema from Phase 0 ([infrastructure-foundations-1.md](infrastructure-foundations-1.md)).
 
@@ -28,7 +30,7 @@ This implementation plan operationalizes **Phase 5 — Photo Lookup** from [TODO
 - **SEC-002**: Uploaded images MUST NOT be executed or stored in a web-served static path; processing MUST occur in an isolated code path and temporary files MUST be deleted after processing.
 - **SEC-003**: EXIF metadata (including GPS) MUST be stripped from uploaded images before any persistence or logging unless the user explicitly consents to using location from the photo.
 - **SEC-004**: The photo-lookup endpoint MUST enforce per-user/per-IP rate limiting to prevent abuse and cost overrun.
-- **SEC-005**: Any third-party vision/OCR provider API keys MUST be read from environment variables and MUST NOT be hardcoded.
+- **SEC-005**: OCR and embedding inference MUST run locally (Tesseract + open-source CLIP); the PoC MUST NOT require any third-party vision/OCR API keys.
 - **CON-001**: This plan MUST NOT alter the ownership classification methodology; it only maps an image to an existing `Business` whose classification is served by Phase 1.
 - **CON-002**: Image processing MUST NOT block the API event loop; heavy inference MUST run in a worker/threadpool or dedicated service.
 - **GUD-001**: Backend code MUST follow the Phase 1 layering (`routers/`, `services/`, `repositories/`, `models/`, `schemas/`) and pass `ruff` checks.
@@ -46,9 +48,9 @@ This implementation plan operationalizes **Phase 5 — Photo Lookup** from [TODO
 |------|-------------|-----------|------|
 | TASK-001 | Create Alembic migration `0005_enable_pgvector_and_embeddings` executing `CREATE EXTENSION IF NOT EXISTS vector` and adding a `logo_embedding vector(512)` column plus an IVFFlat/HNSW index to a new `business_images` table. | | |
 | TASK-002 | Create ORM model `apps/api/app/models/business_image.py` (`BusinessImage`) with fields `id`, `business_id`, `image_url` (nullable), `logo_embedding`, `source` (enum: `provider`, `community`), `created_at`. | | |
-| TASK-003 | Add `PHOTO_MATCH_CONFIDENCE_THRESHOLD`, `PHOTO_MAX_UPLOAD_BYTES`, `PHOTO_LOOKUP_RATE_LIMIT_PER_MIN`, `OCR_PROVIDER`, `EMBEDDING_PROVIDER`, and provider API-key variables to `apps/api/app/config.py` `Settings`. | | |
+| TASK-003 | Add `PHOTO_MATCH_CONFIDENCE_THRESHOLD`, `PHOTO_MAX_UPLOAD_BYTES`, `PHOTO_LOOKUP_RATE_LIMIT_PER_MIN`, `OCR_ENGINE` (default `tesseract`), and `EMBEDDING_MODEL` (default an open-source CLIP model) to `apps/api/app/config.py` `Settings` — all run locally, no API keys. | | |
 | TASK-004 | Create `apps/api/app/vision/base.py` defining `OcrProvider.extract_text(image_bytes) -> list[TextSpan]` and `EmbeddingProvider.embed(image_bytes) -> list[float]` abstract interfaces. | | |
-| TASK-005 | Create `apps/api/app/vision/ocr_provider.py` and `apps/api/app/vision/embedding_provider.py` implementing the interfaces via the configured provider(s), reading keys from settings. | | |
+| TASK-005 | Create `apps/api/app/vision/ocr_provider.py` (local Tesseract via `pytesseract`) and `apps/api/app/vision/embedding_provider.py` (open-source CLIP via `open_clip`/`torch`) implementing the interfaces — models run locally, no API keys. | | |
 | TASK-006 | Create `apps/api/app/vision/image_utils.py` implementing MIME/size validation and EXIF stripping (`strip_exif(image_bytes)`). | | |
 | TASK-007 | Create a backfill CLI `apps/api/app/cli/backfill_embeddings.py` (`python -m app.cli.backfill_embeddings`) that computes and stores `logo_embedding` for businesses with available images. | | |
 | TASK-008 | Create tests `apps/api/tests/test_image_utils.py` (validation + EXIF stripping) and `apps/api/tests/test_vision_providers.py` (mocked providers). | | |
@@ -84,7 +86,7 @@ This implementation plan operationalizes **Phase 5 — Photo Lookup** from [TODO
 
 ## 3. Alternatives
 
-- **ALT-001**: A dedicated external image-recognition SaaS for end-to-end storefront identification — deferred; a composable OCR + embedding approach keeps provider choice flexible and cost controllable, and reuses the existing database via pgvector.
+- **ALT-001**: A dedicated external image-recognition SaaS for end-to-end storefront identification — rejected for the local-first PoC; a local Tesseract + open-source CLIP approach keeps everything on-machine at zero cost and reuses the existing database via pgvector.
 - **ALT-002**: A separate vector database (e.g., Milvus, Pinecone) instead of pgvector — rejected for this phase to avoid new infrastructure; pgvector reuses the existing PostgreSQL instance. Can be revisited at scale.
 - **ALT-003**: OCR-only matching without visual embeddings — rejected; many storefronts have stylized logos with little machine-readable text, so visual similarity materially improves recall.
 - **ALT-004**: On-device inference in the mobile app — deferred; server-side inference centralizes model updates and keeps the app lightweight, at the cost of requiring connectivity.
@@ -96,9 +98,9 @@ This implementation plan operationalizes **Phase 5 — Photo Lookup** from [TODO
 - **DEP-002**: Completion of Phase 0 `Business` schema and shared package ([infrastructure-foundations-1.md](infrastructure-foundations-1.md)).
 - **DEP-003**: Completion of Phase 2 web app ([feature-web-app-1.md](feature-web-app-1.md)) and Phase 3 mobile app ([feature-mobile-app-1.md](feature-mobile-app-1.md)) for client flows.
 - **DEP-004**: PostgreSQL `pgvector` extension available on the database instance.
-- **DEP-005**: Python packages: `pillow` (image handling/EXIF), `numpy`, a vision embedding client, and an OCR client for the configured providers.
+- **DEP-005**: Python packages: `pillow` (image handling/EXIF), `numpy`, `pytesseract` (with the Tesseract binary installed), and `open_clip_torch` + `torch` for local CLIP embeddings.
 - **DEP-006**: Mobile packages: `expo-camera`, `expo-image-picker`.
-- **DEP-007**: OCR and embedding provider API access (keys via environment variables).
+- **DEP-007**: The Tesseract OCR binary installed locally and an open-source CLIP model available on-disk (downloaded once); no external API access required.
 
 ## 5. Files
 
@@ -145,7 +147,7 @@ This implementation plan operationalizes **Phase 5 — Photo Lookup** from [TODO
 - **RISK-005**: pgvector performance at scale; mitigated by an appropriate ANN index (IVFFlat/HNSW) and the option to migrate to a dedicated vector DB later (ALT-002).
 - **ASSUMPTION-001**: The Phase 1–3 systems are deployed and integrable, and the database supports the `pgvector` extension.
 - **ASSUMPTION-002**: A labeled set of storefront/logo images mapped to business ids is available for evaluation.
-- **ASSUMPTION-003**: Chosen OCR and embedding providers expose network APIs usable server-side.
+- **ASSUMPTION-003**: The local Tesseract binary and the open-source CLIP model are installed and runnable server-side.
 - **ASSUMPTION-004**: Users grant camera/photo-library permission on mobile for the capture flow.
 
 ## 8. Related Specifications / Further Reading
@@ -158,6 +160,8 @@ This implementation plan operationalizes **Phase 5 — Photo Lookup** from [TODO
 - [feature-mobile-app-1.md](feature-mobile-app-1.md) — Phase 3 mobile app (prerequisite).
 - [pgvector documentation](https://github.com/pgvector/pgvector)
 - [Pillow documentation](https://pillow.readthedocs.io/)
+- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract)
+- [OpenCLIP](https://github.com/mlfoundations/open_clip)
 - [Expo Camera documentation](https://docs.expo.dev/versions/latest/sdk/camera/)
 - [Expo ImagePicker documentation](https://docs.expo.dev/versions/latest/sdk/imagepicker/)
 - [MDN MediaDevices.getUserMedia()](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)

@@ -4,13 +4,15 @@ version: 1.0
 date_created: 2026-09-06
 last_updated: 2026-09-06
 owner: Is It Local Core Team
-status: 'Planned'
+status: 'Deferred (post-PoC)'
 tags: [feature, mobile, react-native, expo]
 ---
 
 # Introduction
 
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+![Status: Deferred (post-PoC)](https://img.shields.io/badge/status-Deferred-lightgrey)
+
+> **Deferred until after the local-first PoC.** The PoC ships web-only (Phases 0–2). When mobile work begins, run the Expo app locally via Expo Go or a local dev build; **EAS cloud builds and app-store listings are out of scope for the PoC** and become relevant only when preparing a public release.
 
 This implementation plan operationalizes **Phase 3 — Mobile App (React Native / Expo)** from [TODO.md](../TODO.md). It delivers a TypeScript Expo application in `apps/mobile` that lets users search businesses by name and location, view business detail with ownership classification, confidence, and cited sources, browse a map with a device-location "near me" view, reuse shared types from `packages/shared`, and produce buildable iOS and Android artifacts with prepared store listings. This plan consumes the REST API from Phase 1 ([feature-backend-data-1.md](feature-backend-data-1.md)) and the shared package from Phase 0 ([infrastructure-foundations-1.md](infrastructure-foundations-1.md)), reusing patterns established by the Phase 2 web app ([feature-web-app-1.md](feature-web-app-1.md)).
 

@@ -14,7 +14,7 @@
     },
     "provider": {
       "type": "string",
-      "description": "Origin of the source (e.g. foursquare, web_search, corporate_registry)."
+      "description": "Origin of the source (e.g. openstreetmap, searxng, corporate_registry)."
     },
     "url": {
       "type": "string",

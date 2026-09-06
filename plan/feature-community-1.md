@@ -4,13 +4,15 @@ version: 1.0
 date_created: 2026-09-06
 last_updated: 2026-09-06
 owner: Is It Local Core Team
-status: 'Planned'
+status: 'Deferred (post-PoC)'
 tags: [feature, community, moderation, auth, backend, frontend]
 ---
 
 # Introduction
 
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+![Status: Deferred (post-PoC)](https://img.shields.io/badge/status-Deferred-lightgrey)
+
+> **Deferred until after the local-first PoC.** Community features build on the core loop (Phases 0–2). They remain fully local — self-hosted JWT auth and an in-process rate limiter, no third-party identity or hosted services.
 
 This implementation plan operationalizes **Phase 4 — Community & Network Effect** from [TODO.md](../TODO.md). It adds user accounts with lightweight authentication, community-submitted ownership classifications and corrections, a moderation/review workflow, a contributor reputation/weighting system, UI surfacing of "community verified" versus "auto-classified" states, and reporting of incorrect or abusive submissions. This plan extends the Phase 1 backend ([feature-backend-data-1.md](feature-backend-data-1.md)), the Phase 2 web app ([feature-web-app-1.md](feature-web-app-1.md)), and the Phase 3 mobile app ([feature-mobile-app-1.md](feature-mobile-app-1.md)), reusing the `CommunitySubmission` schema defined in Phase 0 ([infrastructure-foundations-1.md](infrastructure-foundations-1.md)).
 
@@ -100,7 +102,7 @@ This implementation plan operationalizes **Phase 4 — Community & Network Effec
 - **DEP-002**: Completion of Phase 0 `CommunitySubmission` schema and shared package ([infrastructure-foundations-1.md](infrastructure-foundations-1.md)).
 - **DEP-003**: Completion of Phase 2 web app ([feature-web-app-1.md](feature-web-app-1.md)) and Phase 3 mobile app ([feature-mobile-app-1.md](feature-mobile-app-1.md)) for client integration.
 - **DEP-004**: Python packages: `argon2-cffi` (or `passlib[bcrypt]`), `pyjwt`, plus existing Phase 1 dependencies.
-- **DEP-005**: A rate-limiting mechanism (in-process token bucket or Redis-backed) for community write endpoints.
+- **DEP-005**: A rate-limiting mechanism for community write endpoints; the PoC uses an in-process token bucket (no Redis required).
 - **DEP-006**: Mobile secure token storage package `expo-secure-store`.
 
 ## 5. Files
@@ -149,7 +151,7 @@ This implementation plan operationalizes **Phase 4 — Community & Network Effec
 - **ASSUMPTION-001**: The Phase 1–3 systems are deployed and integrable.
 - **ASSUMPTION-002**: Moderator accounts are provisioned by an administrator (moderator onboarding process is out of scope).
 - **ASSUMPTION-003**: The open question on moderation policy/thresholds is resolved to configurable numeric thresholds for this phase.
-- **ASSUMPTION-004**: A rate-limiting backend (in-process or Redis) is available in the deployment environment.
+- **ASSUMPTION-004**: An in-process rate limiter is sufficient for the local PoC (Redis can be added later at scale).
 
 ## 8. Related Specifications / Further Reading
 
