@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://is-it-local.dev/schema/community-submission.schema.json",
+  "title": "CommunitySubmission",
+  "description": "A user-submitted proposed classification with evidence, pending review.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "business_id", "proposed_classification", "submitter_id", "status", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Stable unique identifier for the submission."
+    },
+    "business_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identifier of the business the submission refers to."
+    },
+    "proposed_classification": {
+      "type": "string",
+      "enum": [
+        "family_owned",
+        "locally_owned",
+        "independent",
+        "franchise",
+        "corporate_owned",
+        "unknown"
+      ],
+      "description": "The ownership category proposed by the submitter."
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Supporting evidence or reasoning provided by the submitter."
+    },
+    "submitter_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identifier of the user who made the submission."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "approved", "rejected"],
+      "description": "Review status of the submission."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the submission was created."
+    }
+  }
+}

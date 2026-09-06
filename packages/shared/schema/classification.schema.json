@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://is-it-local.dev/schema/classification.schema.json",
+  "title": "OwnershipClassification",
+  "description": "An ownership classification for a business, with confidence and cited sources.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["business_id", "classification", "confidence", "sources", "updated_at"],
+  "properties": {
+    "business_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identifier of the classified business."
+    },
+    "classification": {
+      "type": "string",
+      "enum": [
+        "family_owned",
+        "locally_owned",
+        "independent",
+        "franchise",
+        "corporate_owned",
+        "unknown"
+      ],
+      "description": "The assigned ownership category."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Confidence in the classification, from 0.0 (none) to 1.0 (certain)."
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Reference to a Source id supporting this classification."
+      },
+      "description": "Sources cited as evidence for the classification."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the classification was last updated."
+    }
+  }
+}

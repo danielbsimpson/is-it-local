@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://is-it-local.dev/schema/business.schema.json",
+  "title": "Business",
+  "description": "A physical business or place that can be classified by ownership.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "location"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Stable unique identifier for the business."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display name of the business."
+    },
+    "address": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Postal address components.",
+      "properties": {
+        "street": { "type": "string" },
+        "city": { "type": "string" },
+        "region": { "type": "string" },
+        "postal_code": { "type": "string" },
+        "country": { "type": "string" }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "GeoJSON Point (RFC 7946) with [longitude, latitude].",
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "type": "string", "const": "Point" },
+        "coordinates": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "number" },
+          "description": "[longitude, latitude]."
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Category tags describing the business (e.g. coffee_shop)."
+    },
+    "contact": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Public contact details.",
+      "properties": {
+        "phone": { "type": "string" },
+        "website": { "type": "string", "format": "uri" },
+        "email": { "type": "string", "format": "email" }
+      }
+    },
+    "brand": {
+      "type": ["string", "null"],
+      "description": "National/regional brand the business operates under, if any."
+    },
+    "parent_company": {
+      "type": ["string", "null"],
+      "description": "Parent company that owns the business or brand, if any."
+    }
+  }
+}

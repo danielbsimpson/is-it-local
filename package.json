@@ -1,0 +1,17 @@
+{
+  "name": "is-it-local",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9",
+  "description": "Know where your money goes. Understand who really owns the businesses you shop at.",
+  "license": "MIT",
+  "scripts": {
+    "lint": "pnpm -r --if-present run lint",
+    "format": "prettier --write .",
+    "test": "pnpm -r --if-present run test",
+    "build": "pnpm -r --if-present run build"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.0"
+  }
+}
