@@ -42,8 +42,8 @@ This implementation plan operationalizes **Phase 2 — Web App (Next.js)** from 
 
 - GOAL-001: Scaffold the Next.js app, typed API client, shared design primitives, and the classification badge system.
 
-| Task     | Description                                                                                                                                                                                                                         | Completed | Date |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| Task     | Description                                                                                                                                                                                                                         | Completed | Date       |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- |
 | TASK-001 | Scaffold Next.js (App Router, TypeScript, ESLint) in `apps/web`; create `apps/web/package.json` with scripts `dev`, `build`, `start`, `lint`, `typecheck`.                                                                          | ✅        | 2026-09-20 |
 | TASK-002 | Add `apps/web/tsconfig.json` with a path alias `@is-it-local/shared` resolving to `packages/shared/src`, and register `apps/web` in the pnpm workspace.                                                                             | ✅        | 2026-09-20 |
 | TASK-003 | Create `apps/web/src/lib/config.ts` reading `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_MAP_TILE_URL` (OpenStreetMap tiles), and `NEXT_PUBLIC_GEOCODE_URL` (Nominatim) from environment variables.                                     | ✅        | 2026-09-20 |
@@ -58,8 +58,8 @@ This implementation plan operationalizes **Phase 2 — Web App (Next.js)** from 
 
 - GOAL-002: Implement the search experience, results list, and business detail page with a map.
 
-| Task     | Description                                                                                                                                                                                                                       | Completed | Date |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| Task     | Description                                                                                                                                                                                                                       | Completed | Date       |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- |
 | TASK-010 | Create `apps/web/src/components/SearchForm.tsx` with a `name` text input, a `location` input, a "use my location" button (browser Geolocation API), and a radius selector; on submit it navigates to `/search` with query params. | ✅        | 2026-09-20 |
 | TASK-011 | Create `apps/web/src/lib/geocode.ts` exporting `geocode(query) -> {lat, lon}` using a Nominatim (OpenStreetMap) endpoint at `NEXT_PUBLIC_GEOCODE_URL`, with graceful fallback when geolocation/geocoding fails.                   | ✅        | 2026-09-20 |
 | TASK-012 | Create `apps/web/src/app/page.tsx` (home) rendering the `SearchForm` and a short product explanation.                                                                                                                             | ✅        | 2026-09-20 |
@@ -73,8 +73,8 @@ This implementation plan operationalizes **Phase 2 — Web App (Next.js)** from 
 
 - GOAL-003: Add responsiveness verification, lightweight local logging, tests, and a documented local run workflow.
 
-| Task     | Description                                                                                                                                                                                       | Completed | Date |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| Task     | Description                                                                                                                                                                                       | Completed | Date       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- |
 | TASK-018 | Verify and adjust responsive layout for 360px, 768px, and 1280px breakpoints across home, search, and detail pages.                                                                               | ✅        | 2026-09-20 |
 | TASK-019 | Create `apps/web/src/lib/logger.ts` exposing a `logEvent(name, props)` function that writes page-view and search events to the browser console (no third-party analytics).                        | ✅        | 2026-09-20 |
 | TASK-020 | Wire the error boundary (`app/error.tsx`) to the local `logger` and verify the app makes no requests to third-party analytics/monitoring endpoints — only the local API, map tiles, and geocoder. | ✅        | 2026-09-20 |

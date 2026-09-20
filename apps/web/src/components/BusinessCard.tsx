@@ -15,9 +15,7 @@ function formatAddress(business: Business): string | null {
   if (!address) {
     return null;
   }
-  const parts = [address.street, address.city, address.region, address.postal_code].filter(
-    Boolean,
-  );
+  const parts = [address.street, address.city, address.region, address.postal_code].filter(Boolean);
   return parts.length ? parts.join(", ") : null;
 }
 

@@ -22,11 +22,11 @@ Copy the example environment file and adjust as needed:
 Copy-Item apps/web/.env.example apps/web/.env.local
 ```
 
-| Variable | Purpose | Default |
-| --- | --- | --- |
-| `NEXT_PUBLIC_API_BASE_URL` | Base URL of the Phase 1 API | `http://localhost:8000` |
-| `NEXT_PUBLIC_MAP_TILE_URL` | Leaflet raster tile template | OpenStreetMap tiles |
-| `NEXT_PUBLIC_GEOCODE_URL` | Nominatim search endpoint | OpenStreetMap Nominatim |
+| Variable                   | Purpose                      | Default                 |
+| -------------------------- | ---------------------------- | ----------------------- |
+| `NEXT_PUBLIC_API_BASE_URL` | Base URL of the Phase 1 API  | `http://localhost:8000` |
+| `NEXT_PUBLIC_MAP_TILE_URL` | Leaflet raster tile template | OpenStreetMap tiles     |
+| `NEXT_PUBLIC_GEOCODE_URL`  | Nominatim search endpoint    | OpenStreetMap Nominatim |
 
 ## Scripts
 

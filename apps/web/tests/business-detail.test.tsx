@@ -48,9 +48,7 @@ describe("BusinessDetailView", () => {
   });
 
   it("shows a muted state when unclassified", () => {
-    render(
-      <BusinessDetailView detail={{ ...detail, classification: null, sources: [] }} />,
-    );
+    render(<BusinessDetailView detail={{ ...detail, classification: null, sources: [] }} />);
     expect(screen.getByText("Not yet classified")).toBeInTheDocument();
     expect(screen.getByText("No sources cited yet.")).toBeInTheDocument();
   });

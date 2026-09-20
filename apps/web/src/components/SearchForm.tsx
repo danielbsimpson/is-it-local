@@ -127,12 +127,7 @@ export function SearchForm() {
         <button type="submit" className="button button--primary" disabled={busy}>
           {busy ? "Searching…" : "Search"}
         </button>
-        <button
-          type="button"
-          className="button"
-          onClick={handleUseMyLocation}
-          disabled={busy}
-        >
+        <button type="button" className="button" onClick={handleUseMyLocation} disabled={busy}>
           Use my location
         </button>
       </div>

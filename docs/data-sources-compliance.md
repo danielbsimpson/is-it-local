@@ -10,7 +10,7 @@ ingesting or redistributing enriched data.
 - **Attribution:** Any product using OSM data must credit "© OpenStreetMap contributors"
   and link to <https://www.openstreetmap.org/copyright>.
 - **Share-Alike:** ODbL is a copyleft/share-alike license. If we publicly distribute a
-  *derived database* built from OSM data, that derived database must also be offered
+  _derived database_ built from OSM data, that derived database must also be offered
   under ODbL. Producing and displaying individual results ("produced works") does not
   trigger share-alike, but redistributing the underlying enriched dataset can.
 - **Overpass API usage:** The public Overpass endpoints
