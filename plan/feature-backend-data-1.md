@@ -2,15 +2,15 @@
 goal: Implement Phase 1 Backend & Data (API-first) for Is It Local — FastAPI service, PostgreSQL/PostGIS database, data ingestion, and LLM enrichment pipeline
 version: 1.0
 date_created: 2026-09-06
-last_updated: 2026-09-06
+last_updated: 2026-09-20
 owner: Is It Local Core Team
-status: "Planned"
+status: "Completed"
 tags: [feature, backend, data, infrastructure, api]
 ---
 
 # Introduction
 
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+![Status: Completed](https://img.shields.io/badge/status-Completed-green)
 
 This implementation plan operationalizes **Phase 1 — Backend & Data (API-first)** from [TODO.md](../TODO.md). It delivers a FastAPI backend, a PostgreSQL + PostGIS database with migrations, read/search/detail endpoints, data ingestion from OpenStreetMap and Overture (free/open data), and a local enrichment pipeline (self-hosted SearXNG + llama.cpp) that classifies business ownership with confidence scores and cited sources. Everything runs locally for the PoC — no paid API keys or hosted services are required. Completion of this plan produces a running, tested API that serves classified business data, enabling Phase 2 (Web App) development. This plan depends on the completion of Phase 0 ([infrastructure-foundations-1.md](infrastructure-foundations-1.md)).
 
@@ -80,14 +80,14 @@ This implementation plan operationalizes **Phase 1 — Backend & Data (API-first
 
 | Task     | Description                                                                                                                                                                                                                                                                                                  | Completed | Date |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---- |
-| TASK-022 | Create `packages/enrichment/pyproject.toml` declaring dependencies: `httpx`, `pydantic>=2`, `tenacity`, `openai` (used against the local llama.cpp OpenAI-compatible endpoint), and a shared DB access layer or client to the API.                                                                           |           |      |
-| TASK-023 | Create `packages/enrichment/enrichment/search_client.py` implementing ownership-signal retrieval via the self-hosted SearXNG JSON API (`SEARXNG_BASE_URL`), returning candidate `Source` objects (url, snippet, retrieved_at).                                                                               |           |      |
-| TASK-024 | Create `packages/enrichment/enrichment/llm_classifier.py` implementing a function `classify(business, sources) -> ClassificationResult` that calls the local llama.cpp server (`LLM_BASE_URL`, `LLM_MODEL`) and returns `{classification, confidence, cited_source_ids}` constrained to the six enum values. |           |      |
-| TASK-025 | Create `packages/enrichment/enrichment/guardrails.py` implementing a token-bucket rate limiter (`PROVIDER_RATE_LIMIT_PER_MIN`) for the local services, retries via `tenacity`, and an on-disk/DB response cache.                                                                                             |           |      |
-| TASK-026 | Create `packages/enrichment/enrichment/pipeline.py` orchestrating: fetch business → search sources → classify → persist `Source` rows and one `OwnershipClassification` row (with confidence + linked sources).                                                                                              |           |      |
-| TASK-027 | Create CLI `packages/enrichment/enrichment/cli.py` (`python -m enrichment.cli --limit N`) enriching businesses lacking a classification.                                                                                                                                                                     |           |      |
-| TASK-028 | Create an evaluation harness `packages/enrichment/eval/` with a labeled fixture set `eval/fixtures.jsonl` and `eval/run_eval.py` computing accuracy/precision/recall against known classifications.                                                                                                          |           |      |
-| TASK-029 | Create tests `packages/enrichment/tests/test_classifier.py`, `test_guardrails.py`, and `test_pipeline.py` using mocked LLM/search clients.                                                                                                                                                                   |           |      |
+| TASK-022 | Create `packages/enrichment/pyproject.toml` declaring dependencies: `httpx`, `pydantic>=2`, `tenacity`, `openai` (used against the local llama.cpp OpenAI-compatible endpoint), and a shared DB access layer or client to the API.                                                                           | ✅        | 2026-09-20 |
+| TASK-023 | Create `packages/enrichment/enrichment/search_client.py` implementing ownership-signal retrieval via the self-hosted SearXNG JSON API (`SEARXNG_BASE_URL`), returning candidate `Source` objects (url, snippet, retrieved_at).                                                                               | ✅        | 2026-09-20 |
+| TASK-024 | Create `packages/enrichment/enrichment/llm_classifier.py` implementing a function `classify(business, sources) -> ClassificationResult` that calls the local llama.cpp server (`LLM_BASE_URL`, `LLM_MODEL`) and returns `{classification, confidence, cited_source_ids}` constrained to the six enum values. | ✅        | 2026-09-20 |
+| TASK-025 | Create `packages/enrichment/enrichment/guardrails.py` implementing a token-bucket rate limiter (`PROVIDER_RATE_LIMIT_PER_MIN`) for the local services, retries via `tenacity`, and an on-disk/DB response cache.                                                                                             | ✅        | 2026-09-20 |
+| TASK-026 | Create `packages/enrichment/enrichment/pipeline.py` orchestrating: fetch business → search sources → classify → persist `Source` rows and one `OwnershipClassification` row (with confidence + linked sources).                                                                                              | ✅        | 2026-09-20 |
+| TASK-027 | Create CLI `packages/enrichment/enrichment/cli.py` (`python -m enrichment.cli --limit N`) enriching businesses lacking a classification.                                                                                                                                                                     | ✅        | 2026-09-20 |
+| TASK-028 | Create an evaluation harness `packages/enrichment/eval/` with a labeled fixture set `eval/fixtures.jsonl` and `eval/run_eval.py` computing accuracy/precision/recall against known classifications.                                                                                                          | ✅        | 2026-09-20 |
+| TASK-029 | Create tests `packages/enrichment/tests/test_classifier.py`, `test_guardrails.py`, and `test_pipeline.py` using mocked LLM/search clients.                                                                                                                                                                   | ✅        | 2026-09-20 |
 
 ## 3. Alternatives
 

@@ -59,13 +59,13 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 
 ### Enrichment pipeline (local LLM + self-hosted search)
 
-- [ ] Build enrichment worker in `packages/enrichment`.
-- [ ] Stand up a self-hosted **SearXNG** instance (Docker) for ownership-signal retrieval.
-- [ ] Implement search retrieval against the local SearXNG instance.
-- [ ] Run a local **llama.cpp** OpenAI-compatible server and implement LLM classification producing category + confidence + cited sources.
-- [ ] Persist enrichment results and sources to the database.
-- [ ] Add guardrails: rate limiting, retries, caching (no external spend to control in the PoC).
-- [ ] Add evaluation set to measure classification accuracy.
+- [x] Build enrichment worker in `packages/enrichment`.
+- [x] Stand up a self-hosted **SearXNG** instance (Docker) for ownership-signal retrieval.
+- [x] Implement search retrieval against the local SearXNG instance.
+- [x] Run a local **llama.cpp** OpenAI-compatible server and implement LLM classification producing category + confidence + cited sources.
+- [x] Persist enrichment results and sources to the database.
+- [x] Add guardrails: rate limiting, retries, caching (no external spend to control in the PoC).
+- [x] Add evaluation set to measure classification accuracy.
 
 ---
 
@@ -73,13 +73,13 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 
 > Implementation plan: [plan/feature-web-app-1.md](plan/feature-web-app-1.md)
 
-- [ ] Scaffold Next.js app in `apps/web` (TypeScript).
-- [ ] Build search UI (name + location).
-- [ ] Build results list with classification badges.
-- [ ] Build business detail page (classification, confidence, sources, map).
-- [ ] Add responsive/mobile-friendly layout.
-- [ ] Use free/open map tiles (OpenStreetMap) and local geocoding (Nominatim).
-- [ ] Run the web app locally (`pnpm dev`); no hosted deployment for the PoC.
+- [x] Scaffold Next.js app in `apps/web` (TypeScript).
+- [x] Build search UI (name + location).
+- [x] Build results list with classification badges.
+- [x] Build business detail page (classification, confidence, sources, map).
+- [x] Add responsive/mobile-friendly layout.
+- [x] Use free/open map tiles (OpenStreetMap) and local geocoding (Nominatim).
+- [x] Run the web app locally (`pnpm dev`); no hosted deployment for the PoC.
 
 ---
 

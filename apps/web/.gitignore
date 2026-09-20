@@ -1,0 +1,15 @@
+# Next.js
+/.next/
+/out/
+
+# Testing
+/coverage/
+/playwright-report/
+/test-results/
+
+# Node
+node_modules/
+
+# Local env
+.env
+.env.local

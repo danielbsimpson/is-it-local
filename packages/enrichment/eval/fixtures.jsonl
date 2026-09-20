@@ -1,0 +1,6 @@
+{"name": "McDonald's", "categories": ["fast_food"], "brand": "McDonald's", "sources": [{"url": "https://example.com/mcd", "snippet": "McDonald's is a global corporation operating tens of thousands of company-owned and franchised locations."}], "expected": "corporate_owned"}
+{"name": "Main Street Diner", "categories": ["restaurant"], "sources": [{"url": "https://example.com/diner", "snippet": "The Smith family has owned and operated Main Street Diner for three generations since 1962."}], "expected": "family_owned"}
+{"name": "Bright Smile Dentistry", "categories": ["dentist"], "sources": [{"url": "https://example.com/dentist", "snippet": "An independent single-location dental practice owned by Dr. Alvarez, a local resident."}], "expected": "independent"}
+{"name": "Subway", "categories": ["sandwich"], "brand": "Subway", "sources": [{"url": "https://example.com/subway", "snippet": "This Subway location operates under a franchise agreement; it is locally owned by a franchisee."}], "expected": "franchise"}
+{"name": "Harbor Co-op Grocery", "categories": ["supermarket"], "sources": [{"url": "https://example.com/coop", "snippet": "A community-owned cooperative grocery owned by local resident members; profits stay in town."}], "expected": "locally_owned"}
+{"name": "Mystery Mart", "categories": ["convenience"], "sources": [], "expected": "unknown"}
