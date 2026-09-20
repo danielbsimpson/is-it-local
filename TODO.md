@@ -51,11 +51,11 @@ Each phase has a detailed, machine-readable implementation plan in the [plan/](p
 
 ### Data ingestion (seeding)
 
-- [ ] Integrate **OpenStreetMap** (Overpass / extracts) to seed businesses — free and open, no API key.
-- [ ] Integrate **Overture Maps** to broaden coverage.
-- [ ] Build a de-duplication/merge strategy for overlapping records.
-- [ ] Create a repeatable seed script/job.
-- [ ] Document each provider's license/terms compliance.
+- [x] Integrate **OpenStreetMap** (Overpass / extracts) to seed businesses — free and open, no API key.
+- [x] Integrate **Overture Maps** to broaden coverage.
+- [x] Build a de-duplication/merge strategy for overlapping records.
+- [x] Create a repeatable seed script/job.
+- [x] Document each provider's license/terms compliance.
 
 ### Enrichment pipeline (local LLM + self-hosted search)
 

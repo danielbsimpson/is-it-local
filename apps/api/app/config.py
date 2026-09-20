@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     llm_model: str = "local-model"
     searxng_base_url: str = "http://localhost:8888"
     provider_rate_limit_per_min: int = 60
+    overpass_url: str = "https://overpass-api.de/api/interpreter"
+    overture_data_path: str | None = None
 
     @field_validator("database_url")
     @classmethod
