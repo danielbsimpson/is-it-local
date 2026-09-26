@@ -159,34 +159,54 @@ is-it-local/
 
 ## Getting Started
 
-> The codebase is in its early stages. These are the intended setup steps; commands will be finalized as the apps are scaffolded.
+> The full seed → enrich → API → web loop has been validated end-to-end on a local machine (see [Roadmap](#roadmap)). The commands below are the verified setup steps.
 
 ### Prerequisites
 
 - [Docker](https://www.docker.com/) and Docker Compose (runs PostgreSQL/PostGIS and SearXNG locally)
 - [Python 3.11+](https://www.python.org/)
-- [Node.js 20+](https://nodejs.org/) and a package manager (pnpm recommended)
-- [llama.cpp](https://github.com/ggml-org/llama.cpp) with an open-weight model, run as a local OpenAI-compatible server
+- [Node.js 20+](https://nodejs.org/) and [pnpm](https://pnpm.io/) 9+
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) with an open-weight model, run as a local OpenAI-compatible server (only needed for the enrichment step)
 - No paid API keys are required for the PoC (see [Configuration](#configuration))
 
-### Quick start (planned)
+### Quick start
 
 ```bash
 # 1. Clone the repo
 git clone https://github.com/<your-org>/is-it-local.git
 cd is-it-local
 
-# 2. Copy environment variables and fill in your keys
+# 2. Copy environment variables (defaults work for a fully local run)
 cp .env.example .env
 
-# 3. Start the database and API
-docker compose up -d
+# 3. Start the database and SearXNG
+docker compose -f infra/docker-compose.yml up -d db searxng
 
-# 4. Seed the database from OpenStreetMap / Overture
-#    (script to be added in apps/api)
+# 4. Install API deps and apply migrations
+cd apps/api
+python -m venv .venv
+# Windows: .venv\Scripts\activate  ·  macOS/Linux: source .venv/bin/activate
+pip install -e ".[dev]"
+export DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/is_it_local
+alembic upgrade head
 
-# 5. Run the web app locally
-cd apps/web && pnpm install && pnpm dev
+# 5. Seed the database from OpenStreetMap (a small San Francisco bounding box)
+python -m app.cli.seed --provider openstreetmap --bbox 37.787,-122.410,37.792,-122.403
+# The public overpass-api.de instance is often overloaded (504); if so, pass a mirror:
+#   --overpass-url https://overpass.kumi.systems/api/interpreter
+
+# 6. Run the API (http://localhost:8000, docs at /docs)
+uvicorn app.main:app --port 8000
+
+# 7. (optional) Enrich ownership classifications — requires a llama.cpp server on :8080
+cd ../../packages/enrichment
+pip install -e ".[dev]"
+python -m enrichment.cli --limit 25
+
+# 8. Run the web app locally (http://localhost:3000)
+cd ../..
+pnpm install
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 pnpm --filter @is-it-local/web dev
 ```
 
 ## Configuration
@@ -204,7 +224,11 @@ Configuration is provided via environment variables. A `.env.example` will docum
 
 ## Roadmap
 
-See [TODO.md](TODO.md) for the detailed, phase-by-phase task list, and the [plan/](plan/) directory for the full machine-readable implementation plan behind each phase. The **local-first PoC covers Phases 0–2** (foundations, local backend & data, and the local web app); later phases are deferred until the concept is validated. At a high level:
+See [TODO.md](TODO.md) for the detailed, phase-by-phase task list, and the [plan/](plan/) directory for the full machine-readable implementation plan behind each phase. The **local-first PoC covers Phases 0–2** (foundations, local backend & data, and the local web app); later phases are deferred until the concept is validated.
+
+> **PoC status:** Phases 0–2 are implemented and have been **validated end-to-end** on a local machine — seeding from OpenStreetMap, enrichment retrieval via SearXNG, the FastAPI endpoints, and the Next.js search/detail pages (including Playwright smoke tests) all run against live services. The only step that still requires manual setup is a running llama.cpp server for real LLM classification.
+
+At a high level:
 
 1. **Phase 0 — Foundations:** repo, tooling, data model, classification schema. — [plan/infrastructure-foundations-1.md](plan/infrastructure-foundations-1.md)
 2. **Phase 1 — Backend & data:** ingest open seed data, build local enrichment pipeline, expose API. — [plan/feature-backend-data-1.md](plan/feature-backend-data-1.md)

@@ -8,6 +8,13 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 
 Each phase has a detailed, machine-readable implementation plan in the [plan/](plan/) directory, linked from its heading below.
 
+> **Runtime validation (2026-09-26):** Phases 0–2 were exercised end-to-end on a local machine — Postgres/PostGIS + SearXNG via Docker Compose, Alembic migrations, seeding ~350 businesses from OpenStreetMap, the enrichment DB round-trip against live SearXNG, all FastAPI endpoints (`/health`, `/businesses/search`, `/businesses/{id}`), and the Next.js home/search/detail pages with passing Playwright smoke tests. Two bugs were found and fixed in the process:
+>
+> - **Overpass `406`** — the OSM provider now sends an explicit `User-Agent` (public Overpass rejects the default httpx one). Note: `overpass-api.de` is often overloaded (`504`); use a mirror such as `https://overpass.kumi.systems/api/interpreter`.
+> - **Address schema mismatch** — the OSM and Overture providers emitted `state`/`postcode`/`house_number`, which the `Address` schema (`extra="forbid"`) rejected, causing `500`s on any business with an address. Both providers now emit the canonical `street`/`city`/`region`/`postal_code`/`country` keys, covered by a new regression test.
+>
+> Still requires manual setup: a running **llama.cpp** server for real LLM classification (enrichment was validated with a stub classifier over live search results).
+
 ---
 
 ## Phase 0 — Foundations

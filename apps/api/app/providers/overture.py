@@ -122,8 +122,8 @@ def _address(props: dict) -> dict | None:
     mapping = {
         "freeform": "street",
         "locality": "city",
-        "region": "state",
-        "postcode": "postcode",
+        "region": "region",
+        "postcode": "postal_code",
         "country": "country",
     }
     result = {key: first[tag] for tag, key in mapping.items() if first.get(tag)}

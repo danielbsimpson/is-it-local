@@ -8,14 +8,9 @@ from app.providers.base import BoundingBox, NormalizedPlace, PlaceProvider
 
 PROVIDER_NAME = "openstreetmap"
 
-_ADDRESS_TAGS = {
-    "addr:housenumber": "house_number",
-    "addr:street": "street",
-    "addr:city": "city",
-    "addr:state": "state",
-    "addr:postcode": "postcode",
-    "addr:country": "country",
-}
+# Public Overpass instances reject the default httpx User-Agent with 406; identify ourselves.
+_REQUEST_HEADERS = {"User-Agent": "is-it-local/0.1 (+https://github.com/is-it-local)"}
+
 _CONTACT_TAGS = {
     "phone": "phone",
     "contact:phone": "phone",
@@ -56,11 +51,13 @@ class OpenStreetMapProvider(PlaceProvider):
     def fetch_places(self, bbox: BoundingBox) -> list[NormalizedPlace]:
         query = self._build_query(bbox)
         if self._client is not None:
-            response = self._client.post(self._overpass_url, data={"data": query})
+            response = self._client.post(
+                self._overpass_url, data={"data": query}, headers=_REQUEST_HEADERS
+            )
             response.raise_for_status()
             payload = response.json()
         else:
-            with httpx.Client(timeout=self._timeout) as client:
+            with httpx.Client(timeout=self._timeout, headers=_REQUEST_HEADERS) as client:
                 response = client.post(self._overpass_url, data={"data": query})
                 response.raise_for_status()
                 payload = response.json()
@@ -93,7 +90,7 @@ class OpenStreetMapProvider(PlaceProvider):
             name=name,
             lat=lat,
             lon=lon,
-            address=self._extract(tags, _ADDRESS_TAGS),
+            address=self._address(tags),
             categories=self._categories(tags),
             contact=self._extract(tags, _CONTACT_TAGS),
             brand=tags.get("brand"),
@@ -114,6 +111,26 @@ class OpenStreetMapProvider(PlaceProvider):
         for tag, key in mapping.items():
             if tag in tags and key not in result:
                 result[key] = tags[tag]
+        return result or None
+
+    @staticmethod
+    def _address(tags: dict) -> dict | None:
+        # Emit the canonical Address shape: street, city, region, postal_code, country.
+        house_number = tags.get("addr:housenumber")
+        street = tags.get("addr:street")
+        if house_number:
+            street = f"{house_number} {street}" if street else house_number
+        result: dict[str, str] = {}
+        if street:
+            result["street"] = street
+        if tags.get("addr:city"):
+            result["city"] = tags["addr:city"]
+        if tags.get("addr:state"):
+            result["region"] = tags["addr:state"]
+        if tags.get("addr:postcode"):
+            result["postal_code"] = tags["addr:postcode"]
+        if tags.get("addr:country"):
+            result["country"] = tags["addr:country"]
         return result or None
 
     @staticmethod
